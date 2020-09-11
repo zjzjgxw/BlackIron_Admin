@@ -19,6 +19,8 @@ const Model = {
         payload: {...response, type: loginType}
       });
       if (response.code === 200) {
+        localStorage.setItem('accessToken',response.data.accessToken);
+        localStorage.setItem('refreshToken',response.data.refreshToken);
         // Login successfully
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

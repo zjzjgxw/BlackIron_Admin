@@ -4,7 +4,7 @@ import ProForm, {ProFormText, ProFormSelect, ProFormRadio} from '@ant-design/pro
 import FormItem from "antd/es/form/FormItem";
 
 const CreateForm = (props) => {
-  const {modalVisible, onCancel, onSubmitter} = props;
+  const {modalVisible, onCancel, onSubmit} = props;
   return (
     <Modal
       destroyOnClose
@@ -13,7 +13,7 @@ const CreateForm = (props) => {
       onCancel={() => onCancel()}
       footer={null}
     >
-      <ProForm onFinish={(values) => onSubmitter(values)}>
+      <ProForm onFinish={(values) => onSubmit(values)}>
         <ProFormText name="account" label="账号" tip="最长为 24 位" placeholder="请输入账号" rules={[
           {required: true, message: '请输入账号'},
           {min: 6, max: 20, message: '账号保持在6-20个字符之内'},
@@ -34,7 +34,7 @@ const CreateForm = (props) => {
           {min: 1, max: 25, message: '用户名长度请保持在6-20个字符之内'},
         ]}/>
         <ProFormRadio.Group
-          name="isAdmin"
+          name="adminFlag"
           label="是否为超级管理员"
           options={[
             {
