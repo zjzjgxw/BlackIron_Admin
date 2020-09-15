@@ -5,6 +5,7 @@ export default {
   'menu.admin': '管理页',
   'menu.admin.sub-page': '二级管理页',
   'menu.admin.admin-list': '管理员列表',
+  'menu.admin.admin-role': '角色管理',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register.result': '注册结果',

@@ -73,6 +73,12 @@ export default defineConfig({
                   path: '/admin/index',
                   component: './Admin/home',
                 },
+                {
+                  name: 'admin-role',
+                  icon: 'smile',
+                  path: '/admin/role',
+                  component: './Admin/Role',
+                },
               ],
             },
             {

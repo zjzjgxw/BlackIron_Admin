@@ -1,10 +1,53 @@
-import React from 'react';
-import {Input, Modal} from 'antd';
-import ProForm, {ProFormText, ProFormSelect, ProFormRadio} from '@ant-design/pro-form';
+import React, {useState} from 'react';
+import {Input, Modal, Upload} from 'antd';
+import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
+import ProForm, {ProFormText, ProFormUploadButton, ProFormRadio} from '@ant-design/pro-form';
 import FormItem from "antd/es/form/FormItem";
+import {isSuccess} from "@/utils/utils";
+
 
 const CreateForm = (props) => {
   const {modalVisible, onCancel, onSubmit} = props;
+
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+
+
+  const handleChange = info => {
+
+    if (info.file.status === 'uploading') {
+      console.log('uploading');
+      console.log(info);
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      console.log('done');
+      console.log(info);
+      setLoading(false);
+      const res = info.file.response;
+      if(isSuccess(res)){
+        setImageUrl(res.data.filePath);
+      }
+
+    }
+  };
+
+  const normFile = e => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined/> : <PlusOutlined/>}
+      <div style={{marginTop: 8}}>上传</div>
+    </div>
+  )
   return (
     <Modal
       destroyOnClose
@@ -53,6 +96,25 @@ const CreateForm = (props) => {
         <ProFormText name="email" label="邮箱" placeholder="请输入邮箱" rules={[
           {required: true, type: 'email'},
         ]}/>
+
+        <FormItem
+          name="avatar"
+          label="头像"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+        >
+          <Upload
+            name="file"
+            listType="picture-card"
+            className="avatar-uploader"
+            showUploadList={false}
+            action="/upload/img"
+            onChange={(info)=>handleChange(info)}
+          >
+            {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
+          </Upload>
+        </FormItem>
+
 
       </ProForm>
 

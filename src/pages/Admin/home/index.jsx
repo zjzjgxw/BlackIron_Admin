@@ -13,6 +13,7 @@ import styles from './index.less';
 import UpdateForm from "@/pages/Admin/home/components/UpdateForm";
 
 const queryAdminsData = async (params) => {
+    console.log(params);
     const res = await queryAdmins(params);
     if (isSuccess(res)) {
         const data = {
@@ -118,10 +119,9 @@ export default () => {
     ];
 
     return (
-        <PageContainer content="这是一个新页面，从这里进行开发！" className={styles.main}>
+        <PageContainer  className={styles.main}>
             <div
                 style={{
-                    paddingTop: 100,
                     textAlign: 'center',
                 }}
             >
@@ -180,6 +180,5 @@ export default () => {
 
             </div>
         </PageContainer>
-    )
-        ;
+    );
 };

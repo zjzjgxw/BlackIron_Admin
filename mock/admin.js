@@ -1,3 +1,30 @@
+const genRole = (current, pageSize) => {
+  const tableListDataSource = [];
+  for (let i = 0; i < pageSize; i += 1) {
+    const index = (current - 1) * 10 + i;
+    tableListDataSource.push({
+      id: index,
+      name: `角色 ${index}`,
+      admins: [
+        {
+          id: index % 10 + 1,
+          name: `管理员${index % 10 + 1}`,
+        },
+        {
+          id: (index + 1) % 10 + 1,
+          name: `管理员${(index + 1) % 10 + 1}`,
+        },
+      ]
+    });
+  }
+
+  tableListDataSource.reverse();
+  return tableListDataSource;
+};
+
+let tableRoleListDataSource = genRole(1, 40);
+
+
 export default {
   // 支持值为 Object 和 Array
   'POST /sso/admins/login': (req, res) => {
@@ -144,4 +171,50 @@ export default {
         total: 11,
       }
     },
+
+  'GET /api/admins/roles': (req, res) => {
+    const result = {
+      data: {
+        roles: tableRoleListDataSource,
+      },
+      code: 200,
+      msg: ''
+    };
+    return res.json(result)
+  },
+
+  'POST /api/admins/roles': (req, res) => {
+    // eslint-disable-next-line no-console
+    console.log(req);
+    res.send({
+      code: 200,
+      msg: '',
+      data: {
+        id: 1
+      }
+    });
+  },
+
+  'PUT /api/admins/roles': {
+    data: {},
+    code: 200,
+    msg: ''
+  },
+
+  'DELETE /api/admins/roles/1': {
+    data: {},
+    code: 200,
+    msg: ''
+  },
+  'DELETE /api/admins/roles/2': {
+    data: {},
+    code: 400,
+    msg: '删除失败，请稍后再试'
+  },
+
+  'POST /api/admins/roleRel':{
+    data: {},
+    code: 200,
+    msg: ''
+  }
 };
