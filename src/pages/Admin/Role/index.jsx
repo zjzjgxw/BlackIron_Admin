@@ -4,6 +4,7 @@ import {Button, message, Spin} from 'antd';
 import styles from './index.less';
 import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
 import ProTable from "@ant-design/pro-table";
+import { history } from 'umi';
 import {isSuccess} from "@/utils/utils";
 import Popconfirm from "antd/es/popconfirm";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
@@ -97,6 +98,7 @@ export default () => {
         }}>
           管理成员
         </a>,
+        <a key={row.id}  onClick={()=>{history.push(`/admin/role/${row.id}/permission`);}}>权限管理</a>,
         <Popconfirm key={row.id} title="确定删除？" icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
                     onConfirm={async () => {
                       const res = await deleteRole(row.id);

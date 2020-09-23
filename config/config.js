@@ -74,6 +74,13 @@ export default defineConfig({
                   component: './Admin/home',
                 },
                 {
+                  name: 'role-permission',
+                  icon: 'smile',
+                  path: '/admin/role/:id/permission',
+                  hideInMenu:true,
+                  component: './Admin/Role/Permission',
+                },
+                {
                   name: 'admin-role',
                   icon: 'smile',
                   path: '/admin/role',

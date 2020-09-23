@@ -212,9 +212,80 @@ export default {
     msg: '删除失败，请稍后再试'
   },
 
-  'POST /api/admins/roleRel':{
+  'POST /api/admins/roleRel': {
     data: {},
     code: 200,
     msg: ''
+  },
+
+  'GET /api/admins/roles/permissions':{
+    data: {
+      "permissions":{
+        "9":[6,7,8],
+        "8":[9],
+      }
+    },
+    code: 200,
+    msg: ''
+  },
+
+  'GET /api/permissions/groups': {
+    "msg": "操作成功",
+    "code": 200,
+    "data": {
+      "groups": [
+        {
+          "id": 9,
+          "name": "管理权限",
+          "type": 2,
+          "permissions": [
+            {
+              "id": 6,
+              "name": "添加管理员"
+            },
+            {
+              "id": 7,
+              "name": "删除管理员"
+            },
+            {
+              "id": 8,
+              "name": "修改管理员"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "角色权限",
+          "type": 2,
+          "permissions": [
+            {
+              "id": 9,
+              "name": "修改角色"
+            },
+            {
+              "id": 10,
+              "name": "新增角色"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "财务权限",
+          "type": 2,
+          "permissions": [
+            {
+              "id": 11,
+              "name": "查看财务报表"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "操作权限",
+          "type": 2,
+          "permissions": []
+        }
+      ]
+    }
   }
 };
