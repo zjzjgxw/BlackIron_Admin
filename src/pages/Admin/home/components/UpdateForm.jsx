@@ -44,7 +44,7 @@ const UpdateForm = (props) => {
         }}
       >
 
-        <FormItem hidden name="id" label="账号">
+        <FormItem hidden name="id" label="id">
           <input  />
         </FormItem>
 

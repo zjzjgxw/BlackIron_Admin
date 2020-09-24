@@ -7,6 +7,7 @@ export default {
   'menu.admin.admin-list': '管理员列表',
   'menu.admin.admin-role': '角色管理',
   'menu.admin.role-permission':'角色权限管理',
+  'menu.admin.admin-permission':'权限管理',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register.result': '注册结果',

@@ -60,13 +60,13 @@ export default defineConfig({
               icon: 'crown',
               authority: ['admin'],
               routes: [
-                {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
-                  authority: ['admin'],
-                },
+                // {
+                //   path: '/admin/sub-page',
+                //   name: 'sub-page',
+                //   icon: 'smile',
+                //   component: './Welcome',
+                //   authority: ['admin'],
+                // },
                 {
                   name: 'admin-list',
                   icon: 'smile',
@@ -77,7 +77,7 @@ export default defineConfig({
                   name: 'role-permission',
                   icon: 'smile',
                   path: '/admin/role/:id/permission',
-                  hideInMenu:true,
+                  hideInMenu: true,
                   component: './Admin/Role/Permission',
                 },
                 {
@@ -85,6 +85,12 @@ export default defineConfig({
                   icon: 'smile',
                   path: '/admin/role',
                   component: './Admin/Role',
+                },
+                {
+                  name: 'admin-permission',
+                  icon: 'smile',
+                  path: '/admin/permission',
+                  component: './Admin/Permission',
                 },
               ],
             },

@@ -2,8 +2,8 @@ import {PageContainer} from '@ant-design/pro-layout';
 import React, {Component, useState, useEffect} from 'react';
 import styles from './index.less';
 import ProForm, {ProFormCheckbox} from "@ant-design/pro-form";
-import {connect} from "umi";
-import {Form,Button} from "antd";
+import {connect, history} from "umi";
+import {Form, Button} from "antd";
 
 
 const groupItem = (group) => {
@@ -38,7 +38,7 @@ class Permissions extends Component {
     dispatch({
       type: 'permission/queryRolePermissions',
       payload: {roleId: match.params.id}
-    }).then(res =>{
+    }).then(res => {
       this.formRef.current.setFieldsValue(res);
     });
   }
@@ -50,6 +50,7 @@ class Permissions extends Component {
 
     const onFinish = values => {
       console.log('Received values of form: ', values);
+      history.goBack();
     };
 
     return (
@@ -59,14 +60,14 @@ class Permissions extends Component {
             padding: 24,
           }}
         >
-          <Form ref={this.formRef}  onFinish={onFinish}>
+          <Form ref={this.formRef} onFinish={onFinish}>
             {
               groups && groups.map((item) => {
                 return groupItem(item);
               })
             }
 
-            <Form.Item >
+            <Form.Item>
               <Button type="primary" htmlType="submit">
                 提交
               </Button>

@@ -27,8 +27,8 @@ const EditMemberForm = (props) => {
           label="选择成员"
           mode="multiple"
           request={async () => request()}
-          placeholder="Please select a country"
-          rules={[{required: true, message: 'Please select your country!'}]}
+          placeholder="请选择成员"
+          rules={[{required: true, message: '请选择成员!'}]}
         />
       </ProForm>
     </Modal>

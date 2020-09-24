@@ -17,7 +17,7 @@ const CreateForm = (props) => {
       <ProForm onFinish={(values) => onSubmit(values)}>
         <ProFormText name="name" label="角色名称" placeholder="请输入角色名称" rules={[
           {required: true, message: '请输入用户名称！'},
-          {min: 1, max: 25, message: '用户名长度请保持在6-20个字符之内'},
+          {min: 1, max: 25, message: '用户名长度请保持在1-25个字符之内'},
         ]}/>
       </ProForm>
     </Modal>

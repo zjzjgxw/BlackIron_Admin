@@ -78,8 +78,7 @@ export default {
     msg: '删除失败，请稍后再试'
   },
 
-  'GET /api/admins':
-    {
+  'GET /api/admins': {
       code: 200,
       msg: '',
       data: {
@@ -218,11 +217,11 @@ export default {
     msg: ''
   },
 
-  'GET /api/admins/roles/permissions':{
+  'GET /api/admins/roles/permissions': {
     data: {
-      "permissions":{
-        "9":[6,7,8],
-        "8":[9],
+      "permissions": {
+        "9": [6, 7, 8],
+        "8": [9],
       }
     },
     code: 200,
@@ -287,5 +286,96 @@ export default {
         }
       ]
     }
-  }
+  },
+  'GET /api/permissions': {
+    "msg": "操作成功",
+    "code": 200,
+    "data": {
+      "total": 6,
+      "rows": [
+        {
+          "id": 11,
+          "type": 2,
+          "name": "查看财务报表",
+          "path": "/admins/report",
+          "method": "get",
+          "info": "查看财务报表",
+          "groupId": 7,
+          "groupName": "财务权限"
+        },
+        {
+          "id": 10,
+          "type": 2,
+          "name": "新增角色",
+          "path": "/admins/roles",
+          "method": "post",
+          "info": "新增管理员角色权限",
+          "groupId": 8,
+          "groupName": "角色权限"
+        },
+        {
+          "id": 9,
+          "type": 2,
+          "name": "修改角色",
+          "path": "/admins/roles",
+          "method": "put",
+          "info": "修改管理员角色权限",
+          "groupId": 8,
+          "groupName": "角色权限"
+        },
+        {
+          "id": 8,
+          "type": 2,
+          "name": "修改管理员",
+          "path": "/admins",
+          "method": "put",
+          "info": "修改管理员权限",
+          "groupId": 9,
+          "groupName": "管理权限"
+        },
+        {
+          "id": 7,
+          "type": 2,
+          "name": "删除管理员",
+          "path": "/admins",
+          "method": "delete",
+          "info": "删除管理员权限",
+          "groupId": 9,
+          "groupName": "管理权限"
+        },
+        {
+          "id": 6,
+          "type": 2,
+          "name": "添加管理员",
+          "path": "/admins",
+          "method": "post",
+          "info": "添加管理员权限",
+          "groupId": 9,
+          "groupName": "管理权限"
+        }
+      ]
+    }
+  },
+  'POST /api/permissions':(req, res) => {
+    // eslint-disable-next-line no-console
+    console.log(req);
+    res.send({
+      code: 200,
+      msg: '',
+      data: {
+        id: 1
+      }
+    });
+  },
+  'PUT /api/permissions':(req, res) => {
+    // eslint-disable-next-line no-console
+    console.log(req);
+    res.send({
+      code: 200,
+      msg: '',
+      data: {
+        id: 1
+      }
+    });
+  },
 };
