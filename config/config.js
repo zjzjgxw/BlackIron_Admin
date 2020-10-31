@@ -101,6 +101,51 @@ export default defineConfig({
               component: './ListTableList',
             },
             {
+              name: 'customer',
+              icon: 'UserOutlined',
+              path: '/customer',
+              routes: [
+                {
+                  name: 'list',
+                  icon: 'UserOutlined',
+                  path: '/customer/list',
+                  component: './Customer/List',
+                },
+              ],
+            },
+            {
+              name: 'article',
+              icon: 'ProfileOutlined',
+              path: '/article',
+              routes: [
+                {
+                  name: 'list',
+                  icon: 'ProfileOutlined',
+                  path: '/article/list',
+                  component: './Article/ListSearchArticles',
+                },
+                {
+                  name: 'tags',
+                  icon: 'smile',
+                  path: '/article/tags',
+                  component: './Article/Tags',
+                },
+              ],
+            },
+            {
+              name: 'product',
+              icon: 'smile',
+              path: '/product',
+              routes: [
+                {
+                  name: 'category',
+                  icon: 'ProfileOutlined',
+                  path: '/product/category/index',
+                  component: './Product/Category',
+                },
+              ],
+            },
+            {
               component: './404',
             },
           ],

@@ -1,6 +1,7 @@
 import {parse} from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import {notification} from "antd";
+import numeral from 'numeral';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -68,4 +69,9 @@ export const isSuccess = (res) => {
     description: `${res.msg}`,
   });
   return false;
+};
+
+export const priceFormat = (number) => {
+  const price = number / 100;
+  return `￥${numeral(price).format('0,0.00')}`;
 };

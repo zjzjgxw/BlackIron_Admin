@@ -15,7 +15,6 @@ import UpdateForm from "@/pages/Admin/Role/components/UpdateForm";
 import {queryAdmins} from "@/pages/Admin/home/service";
 
 const queryRoleData = async (params) => {
-  console.log(params);
   const res = await queryRoles(params);
   if (isSuccess(res)) {
     const data = {
