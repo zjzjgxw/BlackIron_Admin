@@ -1,7 +1,7 @@
-// https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
+
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   hash: true,
@@ -142,6 +142,13 @@ export default defineConfig({
                   icon: 'ProfileOutlined',
                   path: '/product/category/index',
                   component: './Product/Category',
+                },
+                {
+                  name: 'attribute',
+                  icon: 'ProfileOutlined',
+                  path: '/product/category/:id/attribute',
+                  hideInMenu: true,
+                  component: './Product/Category/Attribute',
                 },
               ],
             },

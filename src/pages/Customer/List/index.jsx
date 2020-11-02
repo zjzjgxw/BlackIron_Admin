@@ -1,32 +1,27 @@
-import {PageContainer} from '@ant-design/pro-layout';
-import React, {useState, useEffect, useRef} from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import React, { useRef } from 'react';
 import styles from './index.less';
-import ProTable from "@ant-design/pro-table";
-import {isSuccess, priceFormat} from "@/utils/utils";
-import Popconfirm from "antd/es/popconfirm";
-import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
-import {changeCustomerStatus, deleteCustomer, queryCustomer} from "@/pages/Customer/List/service";
+import ProTable from '@ant-design/pro-table';
+import { isSuccess, priceFormat } from '@/utils/utils';
+import Popconfirm from 'antd/es/popconfirm';
+import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
+import { changeCustomerStatus, deleteCustomer, queryCustomer } from '@/pages/Customer/List/service';
 
 const queryCustomerData = async (params) => {
-  console.log(params);
-
   const res = await queryCustomer(params);
   if (isSuccess(res)) {
     const data = {
       data: res.data.rows,
       total: res.data.total,
-      success: true
+      success: true,
     };
     return data;
   }
-  return {}
+  return {};
 };
 
-
 export default () => {
-
   const actionRef = useRef();
-
 
   const columns = [
     {
@@ -63,12 +58,12 @@ export default () => {
     {
       title: '关注数',
       dataIndex: 'idolNum',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '粉丝数',
       dataIndex: 'fansNum',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '总消费金额',
@@ -98,27 +93,33 @@ export default () => {
       valueType: 'option',
       dataIndex: 'id',
       render: (text, row, _, action) => [
-        <a key={row.id} onClick={async () => {
-          const res = await changeCustomerStatus(row.id);
-          if (isSuccess(res)) {
-            action.reload();
-          }
-        }}>
+        <a
+          key={row.id}
+          onClick={async () => {
+            const res = await changeCustomerStatus(row.id);
+            if (isSuccess(res)) {
+              action.reload();
+            }
+          }}
+        >
           {row.status === 0 ? '禁用' : '启用'}
         </a>,
-        <Popconfirm key={row.id} title="确定删除？" icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
-                    onConfirm={async () => {
-                      const res = await deleteCustomer(row.id);
-                      if (isSuccess(res)) {
-                        action.reload();
-                      }
-                    }}>
+        <Popconfirm
+          key={row.id}
+          title="确定删除？"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={async () => {
+            const res = await deleteCustomer(row.id);
+            if (isSuccess(res)) {
+              action.reload();
+            }
+          }}
+        >
           <a key={row.id}>删除</a>
-        </Popconfirm>
+        </Popconfirm>,
       ],
     },
   ];
-
 
   return (
     <PageContainer className={styles.main}>
@@ -127,15 +128,13 @@ export default () => {
           textAlign: 'center',
         }}
       >
-
         <ProTable
           size="small"
           columns={columns}
           actionRef={actionRef}
-          request={(params, sorter, filter) => queryCustomerData({...params, sorter, filter})}
+          request={(params, sorter, filter) => queryCustomerData({ ...params, sorter, filter })}
           rowKey="id"
         />
-
       </div>
     </PageContainer>
   );

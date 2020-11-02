@@ -1,30 +1,37 @@
-import {stringify} from 'querystring';
-import {history} from 'umi';
-import {accountLogin} from '@/services/login';
-import {setAuthority} from '@/utils/authority';
-import {getPageQuery} from '@/utils/utils';
+import { stringify } from 'querystring';
+import { history } from 'umi';
+import { accountLogin, currentStaff } from '@/services/login';
+import { setAuthority } from '@/utils/authority';
+import { getPageQuery } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
   state: {
     status: undefined,
-    message: undefined
+    message: undefined,
   },
   effects: {
-    * login({payload}, {call, put}) {
+    *login({ payload }, { call, put }) {
       const loginType = payload.type;
       const response = yield call(accountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
-        payload: {...response, type: loginType}
+        payload: { ...response, type: loginType },
       });
       if (response.code === 200) {
-        localStorage.setItem('accessToken',response.data.accessToken);
-        localStorage.setItem('refreshToken',response.data.refreshToken);
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         // Login successfully
+
+        // 获取当前用户信息
+        const result = yield call(currentStaff, {});
+        if (result.code === 200) {
+          localStorage.setItem('staff', JSON.stringify(result.data.staff));
+        }
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        let {redirect} = params;
+        let { redirect } = params;
 
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
@@ -46,7 +53,7 @@ const Model = {
     },
 
     logout() {
-      const {redirect} = getPageQuery(); // Note: There may be security issues, please note
+      const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
@@ -59,13 +66,12 @@ const Model = {
     },
   },
   reducers: {
-    changeLoginStatus(state, {payload}) {
+    changeLoginStatus(state, { payload }) {
       setAuthority('admin');
       if (payload.code === 200) {
-        return {...state, status: 'ok', type: payload.type};
-      } else {
-        return {...state, status: 'error', type: payload.type, message:payload.msg};
+        return { ...state, status: 'ok', type: payload.type };
       }
+      return { ...state, status: 'error', type: payload.type, message: payload.msg };
     },
   },
 };

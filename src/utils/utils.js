@@ -1,7 +1,8 @@
-import {parse} from 'querystring';
+import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
-import {notification} from "antd";
+import { notification } from 'antd';
 import numeral from 'numeral';
+import { history } from 'umi';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -15,7 +16,7 @@ export const isAntDesignPro = () => {
 }; // 给官方演示站点用，用于关闭真实开发环境不需要使用的特性
 
 export const isAntDesignProOrDev = () => {
-  const {NODE_ENV} = process.env;
+  const { NODE_ENV } = process.env;
 
   if (NODE_ENV === 'development') {
     return true;
@@ -32,7 +33,7 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 
 export const getAuthorityFromRouter = (router = [], pathname) => {
   const authority = router.find(
-    ({routes, path = '/', target = '_self'}) =>
+    ({ routes, path = '/', target = '_self' }) =>
       (path && target !== '_blank' && pathRegexp(path).exec(pathname)) ||
       (routes && getAuthorityFromRouter(routes, pathname)),
   );
@@ -74,4 +75,21 @@ export const isSuccess = (res) => {
 export const priceFormat = (number) => {
   const price = number / 100;
   return `￥${numeral(price).format('0,0.00')}`;
+};
+
+export const getCurrentStaff = () => {
+  try {
+    const staff = JSON.parse(localStorage.getItem('staff'));
+    if (staff === null) {
+      history.replace({
+        pathname: '/user/login',
+      });
+    }
+    return staff;
+  } catch (e) {
+    history.replace({
+      pathname: '/user/login',
+    });
+  }
+  return null;
 };

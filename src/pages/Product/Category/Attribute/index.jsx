@@ -3,26 +3,28 @@ import React, { useState, useRef } from 'react';
 import styles from './index.less';
 import ProTable from '@ant-design/pro-table';
 import { isSuccess } from '@/utils/utils';
-import { history } from 'umi';
 import Popconfirm from 'antd/es/popconfirm';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
-import {
-  addCategory,
-  deleteCategory,
-  queryProductCategory,
-  updateCategory,
-} from '@/pages/Product/Category/service';
-import UpdateCategoryForm from '@/pages/Product/Category/components/UpdateCategoryForm';
 import { Button, message } from 'antd';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
-import CreateForm from '@/pages/Product/Category/components/CreateForm';
+import {
+  addAttributeOption,
+  addAttributes,
+  deleteAttribute,
+  deleteAttributeOption,
+  queryProductCategoryAttribute,
+  updateAttribute,
+} from '@/pages/Product/Category/Attribute/service';
+import CreateForm from '@/pages/Product/Category/Attribute/components/CreateForm';
+import UpdateForm from '@/pages/Product/Category/Attribute/components/UpdateForm';
+import EditOptionForm from '@/pages/Product/Category/Attribute/components/EditOptionForm';
 
-const queryCategory = async (params) => {
-  const res = await queryProductCategory(params);
+const queryCategoryAttribute = async (categoryId) => {
+  const res = await queryProductCategoryAttribute(categoryId);
   if (isSuccess(res)) {
     const data = {
-      data: res.data.categories,
-      total: res.data.categories.length,
+      data: res.data.attributes,
+      total: res.data.attributes.length,
       success: true,
     };
     return data;
@@ -30,11 +32,14 @@ const queryCategory = async (params) => {
   return {};
 };
 
-export default () => {
+export default (props) => {
+  const { match } = props;
   const actionRef = useRef();
   const [createModalVisible, handleModalVisible] = useState(false);
+  const [optionModalVisible, handleOptionModalVisible] = useState(false);
+
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [category, setCategory] = useState({});
+  const [attribute, setAttribute] = useState({});
 
   const columns = [
     {
@@ -43,30 +48,43 @@ export default () => {
       hideInSearch: true,
     },
     {
-      title: '类目名',
+      title: '属性名',
       dataIndex: 'name',
       hideInSearch: true,
+    },
+    {
+      title: '选项',
+      dataIndex: 'options',
+      hideInSearch: true,
+      render: (_, row) => {
+        const { options = [] } = row;
+
+        const values = [];
+        options.forEach((item) => {
+          values.push(item.content);
+        });
+        return values && values.length > 0 ? values.join('、') : '无';
+      },
     },
     {
       title: '操作',
       valueType: 'option',
       dataIndex: 'id',
       render: (text, row, _, action) => [
-        <a key={row.id}>规格管理</a>,
         <a
           key={row.id}
           onClick={() => {
-            history.push(`/product/category/${row.id}/attribute`);
+            handleOptionModalVisible(true);
+            setAttribute(row);
           }}
         >
-          属性管理
+          选项管理
         </a>,
-
         <a
           key={row.id}
           onClick={() => {
             handleUpdateModalVisible(true);
-            setCategory(row);
+            setAttribute(row);
           }}
         >
           编辑
@@ -76,7 +94,7 @@ export default () => {
           title="确定删除？"
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={async () => {
-            const res = await deleteCategory(row.id);
+            const res = await deleteAttribute(row.id);
             if (isSuccess(res)) {
               action.reload();
             }
@@ -99,7 +117,7 @@ export default () => {
           size="small"
           columns={columns}
           actionRef={actionRef}
-          request={(params, sorter, filter) => queryCategory({ ...params, sorter, filter })}
+          request={() => queryCategoryAttribute(match.params.id)}
           rowKey="id"
           toolBarRender={() => [
             <Button key="addCategoryButton" type="primary" onClick={() => handleModalVisible(true)}>
@@ -114,37 +132,49 @@ export default () => {
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
             try {
-              await addCategory(fields.name);
+              await addAttributes({ name: fields.name, categoryId: match.params.id });
               message.success('添加成功');
               handleModalVisible(false);
               return true;
             } catch (error) {
-              console.log(error);
               message.error('添加失败请重试！');
               return false;
             }
           }}
         />
 
-        {category && Object.keys(category).length ? (
-          <UpdateCategoryForm
+        {attribute && Object.keys(attribute).length ? (
+          <EditOptionForm
+            onCancel={() => {
+              handleOptionModalVisible(false);
+              setAttribute({});
+            }}
+            attribute={attribute}
+            modalVisible={optionModalVisible}
+            onDelete={deleteAttributeOption}
+            onAdd={addAttributeOption}
+          />
+        ) : null}
+
+        {attribute && Object.keys(attribute).length ? (
+          <UpdateForm
             onCancel={() => {
               handleUpdateModalVisible(false);
-              setCategory({});
+              setAttribute({});
             }}
-            values={category}
+            values={attribute}
             modalVisible={updateModalVisible}
             onSubmit={async (fields) => {
               try {
-                await updateCategory(fields.id, fields.name);
+                await updateAttribute(fields.id, fields.name);
                 message.success('更新成功');
                 handleUpdateModalVisible(false);
-                setCategory({});
+                setAttribute({});
                 return true;
               } catch (error) {
                 message.error('更新失败请重试！');
                 handleUpdateModalVisible(false);
-                setCategory({});
+                setAttribute({});
                 return false;
               }
             }}
