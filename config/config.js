@@ -150,6 +150,13 @@ export default defineConfig({
                   hideInMenu: true,
                   component: './Product/Category/Attribute',
                 },
+                {
+                  name: 'specifications',
+                  icon: 'ProfileOutlined',
+                  path: '/product/category/:id/specifications',
+                  hideInMenu: true,
+                  component: './Product/Category/Specification',
+                },
               ],
             },
             {

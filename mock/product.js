@@ -84,6 +84,14 @@ export default {
     });
   },
 
+  'DELETE /api/category/attributes/1': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {},
+    });
+  },
+
   'GET /api/category/attributes': {
     msg: '操作成功',
     code: 200,
@@ -110,6 +118,93 @@ export default {
           id: 2,
           categoryId: 2,
           name: '品牌',
+          options: [],
+        },
+      ],
+    },
+  },
+
+  'DELETE /api/category/specifications/1': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {},
+    });
+  },
+
+  'PUT /api/category/specifications/1': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {},
+    });
+  },
+
+  'POST /api/category/specifications': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {
+        id: 1,
+      },
+    });
+  },
+
+  'POST /api/category/specifications/options': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {
+        id: 1,
+      },
+    });
+  },
+
+  'DELETE /api/category/specifications/options/1': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {},
+    });
+  },
+
+  'GET /api/category/specifications': {
+    msg: '操作成功',
+    code: 200,
+    data: {
+      list: [
+        {
+          id: 1,
+          categoryId: 2,
+          name: '尺寸',
+          options: [],
+        },
+        {
+          id: 2,
+          categoryId: 2,
+          name: '颜色',
+          options: [
+            {
+              id: 1,
+              specificationId: 2,
+              content: '红色',
+            },
+            {
+              id: 2,
+              specificationId: 2,
+              content: '绿色',
+            },
+            {
+              id: 3,
+              specificationId: 2,
+              content: '蓝色',
+            },
+          ],
+        },
+        {
+          id: 3,
+          categoryId: 2,
+          name: '大小',
           options: [],
         },
       ],

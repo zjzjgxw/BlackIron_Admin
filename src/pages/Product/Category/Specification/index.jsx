@@ -3,26 +3,28 @@ import React, { useState, useRef } from 'react';
 import styles from './index.less';
 import ProTable from '@ant-design/pro-table';
 import { isSuccess } from '@/utils/utils';
-import { history } from 'umi';
 import Popconfirm from 'antd/es/popconfirm';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
-import {
-  addCategory,
-  deleteCategory,
-  queryProductCategory,
-  updateCategory,
-} from '@/pages/Product/Category/service';
-import UpdateCategoryForm from '@/pages/Product/Category/components/UpdateCategoryForm';
 import { Button, message } from 'antd';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
-import CreateForm from '@/pages/Product/Category/components/CreateForm';
+import CreateForm from '@/pages/Product/Category/Specification/components/CreateForm';
+import UpdateForm from '@/pages/Product/Category/Specification/components/UpdateForm';
+import {
+  addSpecification,
+  addSpecificationOption,
+  deleteSpecification,
+  deleteSpecificationOption,
+  queryProductCategorySpecification,
+  updateSpecification,
+} from '@/pages/Product/Category/Specification/service';
+import EditOptionForm from '@/pages/Product/Category/Specification/components/EditOptionForm';
 
-const queryCategory = async (params) => {
-  const res = await queryProductCategory(params);
+const queryCategorySpecification = async (categoryId) => {
+  const res = await queryProductCategorySpecification(categoryId);
   if (isSuccess(res)) {
     const data = {
-      data: res.data.categories,
-      total: res.data.categories.length,
+      data: res.data.list,
+      total: res.data.list.length,
       success: true,
     };
     return data;
@@ -30,11 +32,14 @@ const queryCategory = async (params) => {
   return {};
 };
 
-export default () => {
+export default (props) => {
+  const { match } = props;
   const actionRef = useRef();
   const [createModalVisible, handleModalVisible] = useState(false);
+  const [optionModalVisible, handleOptionModalVisible] = useState(false);
+
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [category, setCategory] = useState({});
+  const [specification, setSpecification] = useState({});
 
   const columns = [
     {
@@ -43,9 +48,23 @@ export default () => {
       hideInSearch: true,
     },
     {
-      title: '类目名',
+      title: '规格名',
       dataIndex: 'name',
       hideInSearch: true,
+    },
+    {
+      title: '选项',
+      dataIndex: 'options',
+      hideInSearch: true,
+      render: (_, row) => {
+        const { options = [] } = row;
+
+        const values = [];
+        options.forEach((item) => {
+          values.push(item.content);
+        });
+        return values && values.length > 0 ? values.join('、') : '无';
+      },
     },
     {
       title: '操作',
@@ -55,24 +74,17 @@ export default () => {
         <a
           key={row.id}
           onClick={() => {
-            history.push(`/product/category/${row.id}/attribute`);
+            handleOptionModalVisible(true);
+            setSpecification(row);
           }}
         >
-          属性管理
-        </a>,
-        <a
-          key={row.id}
-          onClick={() => {
-            history.push(`/product/category/${row.id}/specifications`);
-          }}
-        >
-          规格管理
+          选项管理
         </a>,
         <a
           key={row.id}
           onClick={() => {
             handleUpdateModalVisible(true);
-            setCategory(row);
+            setSpecification(row);
           }}
         >
           编辑
@@ -82,7 +94,7 @@ export default () => {
           title="确定删除？"
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={async () => {
-            const res = await deleteCategory(row.id);
+            const res = await deleteSpecification(row.id);
             if (isSuccess(res)) {
               action.reload();
             }
@@ -105,7 +117,7 @@ export default () => {
           size="small"
           columns={columns}
           actionRef={actionRef}
-          request={(params, sorter, filter) => queryCategory({ ...params, sorter, filter })}
+          request={() => queryCategorySpecification(match.params.id)}
           rowKey="id"
           toolBarRender={() => [
             <Button key="addCategoryButton" type="primary" onClick={() => handleModalVisible(true)}>
@@ -120,37 +132,55 @@ export default () => {
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
             try {
-              await addCategory(fields.name);
+              await addSpecification({ name: fields.name, categoryId: match.params.id });
               message.success('添加成功');
               handleModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
               return true;
             } catch (error) {
-              console.log(error);
               message.error('添加失败请重试！');
               return false;
             }
           }}
         />
 
-        {category && Object.keys(category).length ? (
-          <UpdateCategoryForm
+        {specification && Object.keys(specification).length ? (
+          <EditOptionForm
+            onCancel={() => {
+              handleOptionModalVisible(false);
+              setSpecification({});
+            }}
+            specification={specification}
+            modalVisible={optionModalVisible}
+            onDelete={deleteSpecificationOption}
+            onAdd={addSpecificationOption}
+          />
+        ) : null}
+
+        {specification && Object.keys(specification).length ? (
+          <UpdateForm
             onCancel={() => {
               handleUpdateModalVisible(false);
-              setCategory({});
+              setSpecification({});
             }}
-            values={category}
+            values={specification}
             modalVisible={updateModalVisible}
             onSubmit={async (fields) => {
               try {
-                await updateCategory(fields.id, fields.name);
+                await updateSpecification(fields.id, fields.name);
                 message.success('更新成功');
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
                 handleUpdateModalVisible(false);
-                setCategory({});
+                setSpecification({});
                 return true;
               } catch (error) {
                 message.error('更新失败请重试！');
                 handleUpdateModalVisible(false);
-                setCategory({});
+                setSpecification({});
                 return false;
               }
             }}
