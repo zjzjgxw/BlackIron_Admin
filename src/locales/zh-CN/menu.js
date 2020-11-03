@@ -17,6 +17,8 @@ export default {
   'menu.product.category': '商品类目',
   'menu.product.attribute': '商品类目属性',
   'menu.product.specifications': '商品规格',
+  'menu.product.list': '商品列表',
+  'menu.product.detail': '商品详情',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register.result': '注册结果',

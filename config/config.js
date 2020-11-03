@@ -1,7 +1,6 @@
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
-
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   hash: true,
@@ -156,6 +155,19 @@ export default defineConfig({
                   path: '/product/category/:id/specifications',
                   hideInMenu: true,
                   component: './Product/Category/Specification',
+                },
+                {
+                  name: 'list',
+                  icon: 'smile',
+                  path: '/product/list',
+                  component: './Product/List',
+                },
+                {
+                  name: 'detail',
+                  icon: 'smile',
+                  path: '/product/detail',
+                  hideInMenu: true,
+                  component: './Product/Detail',
                 },
               ],
             },
