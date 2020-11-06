@@ -28,16 +28,13 @@ export default () => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
   };
   const [categories, setCategories] = useState([]);
-
   const queryProductData = async (params) => {
     const res = await queryProducts(params);
     if (isSuccess(res)) {
       const result = await queryProductCategory({});
       if (isSuccess(result)) {
+        console.log(categories);
         setCategories(result.data.categories);
-        if (categories.length === 0) {
-          return {};
-        }
       }
       return {
         data: res.data.rows,

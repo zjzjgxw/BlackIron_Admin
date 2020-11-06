@@ -19,6 +19,7 @@ export default {
   'menu.product.specifications': '商品规格',
   'menu.product.list': '商品列表',
   'menu.product.detail': '商品详情',
+  'menu.product.images': '商品描述',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register.result': '注册结果',

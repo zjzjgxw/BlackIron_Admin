@@ -169,6 +169,13 @@ export default defineConfig({
                   hideInMenu: true,
                   component: './Product/Detail',
                 },
+                {
+                  name: 'images',
+                  icon: 'smile',
+                  path: '/product/:id/images',
+                  hideInMenu: true,
+                  component: './Product/Images',
+                },
               ],
             },
             {

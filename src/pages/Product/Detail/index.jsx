@@ -1,10 +1,11 @@
-import { Button, Card, Input, Form, Radio, Select } from 'antd';
-import { connect } from 'umi';
+import { Button, Card, Input, Form, Radio, Select, Upload } from 'antd';
+import { connect, history } from 'umi';
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { queryProductCategory } from '@/pages/Product/Category/service';
 import { isSuccess } from '@/utils/utils';
 import { queryProductCategoryAttribute } from '@/pages/Product/Category/Attribute/service';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -13,6 +14,37 @@ const { TextArea } = Input;
 const Detail = () => {
   const [categories, setCategories] = useState([]);
   const [attributes, setAttributes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const handleChange = (info) => {
+    if (info.file.status === 'uploading') {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      setLoading(false);
+      const res = info.file.response;
+      if (isSuccess(res)) {
+        setImageUrl(res.data.filePath);
+      }
+    }
+  };
+
+  const normFile = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>上传</div>
+    </div>
+  );
 
   const queryCategory = async (params) => {
     const res = await queryProductCategory(params);
@@ -62,12 +94,6 @@ const Detail = () => {
   };
 
   const onFinish = (values) => {
-    // const {dispatch} = props;
-    // dispatch({
-    //   type: 'productAndDetail/submitRegularForm',
-    //   payload: values,
-    // });
-
     const params = {};
     Object.keys(values).forEach((key) => {
       if (key.startsWith('attribute_')) {
@@ -82,6 +108,7 @@ const Detail = () => {
       }
     });
     console.log(params);
+    history.push(`/product/17/images`);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -169,6 +196,29 @@ const Detail = () => {
               placeholder="请输入商品简介，控制在200字以内"
               rows={4}
             />
+          </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            name="coverUrl"
+            label="封面"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
+            <Upload
+              name="file"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="/api/upload/img"
+              onChange={(info) => handleChange(info)}
+            >
+              {imageUrl ? (
+                <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+              ) : (
+                uploadButton
+              )}
+            </Upload>
           </FormItem>
 
           <FormItem {...formItemLayout} label="库存类型" name="stockType">

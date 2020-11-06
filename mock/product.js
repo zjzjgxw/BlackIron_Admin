@@ -331,4 +331,70 @@ export default {
       ],
     },
   },
+
+  'GET /api/products/detail/13': {
+    msg: '操作成功',
+    code: 200,
+    data: {
+      detail: {
+        id: 13,
+        businessId: 2,
+        name: '新商品1',
+        categoryId: 11,
+        mode: 1,
+        stockType: 1,
+        statusType: 1,
+        description: '',
+        coverUrl: '1235.jpg',
+        price: '50.00',
+        originalPrice: '100.00',
+        saleNum: 25,
+        lastNum: 13,
+        deleteFlag: 0,
+        createTime: '2020-10-19 14:16:20',
+        attributes: [
+          {
+            id: 18,
+            detailId: 13,
+            name: '颜色',
+            content: '红色',
+          },
+          {
+            id: 19,
+            detailId: 13,
+            name: '品牌',
+            content: '丽友',
+          },
+        ],
+        detailImages: [
+          {
+            id: 18,
+            detailId: 13,
+            imgUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+            indexNo: 2,
+          },
+          {
+            id: 19,
+            detailId: 13,
+            imgUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            indexNo: 1,
+          },
+        ],
+        mainImages: [
+          {
+            id: 14,
+            detailId: 13,
+            imgUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+            indexNo: 1,
+          },
+          {
+            id: 15,
+            detailId: 13,
+            imgUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            indexNo: 2,
+          },
+        ],
+      },
+    },
+  },
 };
