@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export async function queryProductCategoryAttribute(categoryId) {
   return request('/api/category/attributes', {
-    categoryId,
+    params:{categoryId},
   });
 }
 

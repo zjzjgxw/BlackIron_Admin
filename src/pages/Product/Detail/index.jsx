@@ -1,21 +1,27 @@
-import { Button, Card, Input, Form, Radio, Select, Upload } from 'antd';
-import { connect, history } from 'umi';
-import React, { useState, useEffect } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { queryProductCategory } from '@/pages/Product/Category/service';
-import { isSuccess } from '@/utils/utils';
-import { queryProductCategoryAttribute } from '@/pages/Product/Category/Attribute/service';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import {Button, Card, Input, Form, Radio, Select, Upload} from 'antd';
+import {connect, history} from 'umi';
+import React, {useState, useEffect} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import {queryProductCategory} from '@/pages/Product/Category/service';
+import {isSuccess} from '@/utils/utils';
+import {queryProductCategoryAttribute} from '@/pages/Product/Category/Attribute/service';
+import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
+import {queryProductDetails} from "@/pages/Product/Images/service";
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { TextArea } = Input;
+const {Option} = Select;
+const {TextArea} = Input;
 
-const Detail = () => {
+const Detail = (props) => {
+  const {match} = props;
+  const [form] = Form.useForm();
+
   const [categories, setCategories] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const [statusType, setStatusType] = useState(null);
+  const [stockType, setStockType] = useState(null);
 
   const handleChange = (info) => {
     if (info.file.status === 'uploading') {
@@ -41,8 +47,8 @@ const Detail = () => {
 
   const uploadButton = (
     <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>上传</div>
+      {loading ? <LoadingOutlined/> : <PlusOutlined/>}
+      <div style={{marginTop: 8}}>上传</div>
     </div>
   );
 
@@ -54,11 +60,16 @@ const Detail = () => {
     return [];
   };
 
-  useEffect(() => {
-    queryCategory().then((data) => setCategories(data)); // 获取类目属性数据
-  }, []);
+  const queryProductInfo = async () => {
+    const res = await queryProductDetails(match.params.id);
+    if (isSuccess(res)) {
+      return res.data.detail;
+    }
+    return {};
+  };
 
-  const [form] = Form.useForm();
+
+
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -102,7 +113,7 @@ const Detail = () => {
         if (!params.hasOwnProperty('attributes')) {
           params.attributes = [];
         }
-        params.attributes.push({ name, content });
+        params.attributes.push({name, content});
       } else {
         params[key] = values[key];
       }
@@ -119,10 +130,42 @@ const Detail = () => {
   // 商品类目改变时
   const handleCategoryChange = async (categoryId) => {
     const res = await queryProductCategoryAttribute(categoryId);
+    console.log(res);
     if (isSuccess(res)) {
       setAttributes(res.data.attributes);
+      return res.data.attributes;
     }
+    return null;
   };
+
+  const handleStatusTypeChange = (e) => {
+    form.setFieldsValue({ statusType: e.target.value });
+    setStatusType(e.target.value);
+    return  e.target.value;
+  };
+
+  const handleStockTypeChange = (e) => {
+    form.setFieldsValue({ stockType: e.target.value });
+    setStockType(e.target.value);
+    return  e.target.value;
+  };
+
+  useEffect(() => {
+    queryCategory().then((data) => setCategories(data)); // 获取类目属性数据
+    if(match.params.id){
+      queryProductInfo().then((data) => {
+        form.setFieldsValue({...data});
+        setImageUrl(data.coverUrl);
+        setStatusType(data.statusType);
+        setStockType(data.stockType);
+        handleCategoryChange(data.categoryId).then(()=>{
+          data.attributes.forEach(item=>{
+            form.setFieldsValue({ [`attribute_${item.name}`]: item.content});
+          })
+        });
+      })
+    }
+  }, []);
 
   return (
     <PageContainer>
@@ -134,16 +177,13 @@ const Detail = () => {
           }}
           form={form}
           name="basic"
-          initialValues={{
-            public: '1',
-          }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
           <FormItem
             {...formItemLayout}
             label="类目"
-            name="category"
+            name="categoryId"
             rules={[
               {
                 required: true,
@@ -151,7 +191,7 @@ const Detail = () => {
               },
             ]}
           >
-            <Select onChange={handleCategoryChange}>
+            <Select onChange={handleCategoryChange}  >
               {categories.map((item) => {
                 return (
                   <Select.Option key={item.id} value={item.id}>
@@ -174,7 +214,7 @@ const Detail = () => {
               },
             ]}
           >
-            <Input placeholder="请输入商品标题,在50字以内" />
+            <Input placeholder="请输入商品标题,在50字以内"/>
           </FormItem>
 
           <FormItem
@@ -214,7 +254,7 @@ const Detail = () => {
               onChange={(info) => handleChange(info)}
             >
               {imageUrl ? (
-                <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+                <img src={imageUrl} alt="avatar" style={{width: '100%'}}/>
               ) : (
                 uploadButton
               )}
@@ -223,7 +263,7 @@ const Detail = () => {
 
           <FormItem {...formItemLayout} label="库存类型" name="stockType">
             <div>
-              <Radio.Group>
+              <Radio.Group value={stockType} onChange={handleStockTypeChange}>
                 <Radio value="1">拍下减库存</Radio>
                 <Radio value="2">付款减库存</Radio>
               </Radio.Group>
@@ -232,7 +272,7 @@ const Detail = () => {
 
           <FormItem {...formItemLayout} label="状态" name="statusType">
             <div>
-              <Radio.Group>
+              <Radio.Group value={statusType} onChange={handleStatusTypeChange}  >
                 <Radio value="1">上架</Radio>
                 <Radio value="2">下架</Radio>
               </Radio.Group>
@@ -241,34 +281,34 @@ const Detail = () => {
 
           {attributes && Object.keys(attributes).length
             ? attributes.map((attribute) => {
-                if (attribute.options.length > 0) {
-                  return (
-                    <FormItem
-                      {...formItemLayout}
-                      label={attribute.name}
-                      name={`attribute_${attribute.name}`}
-                      key={`${attribute.id}`}
-                      rules={[
-                        {
-                          required: true,
-                          message: '请选择一个选项',
-                        },
-                      ]}
-                    >
-                      <Select>
-                        {attribute.options.map((option) => {
-                          return (
-                            <Option value={option.content} key={`${attribute.id}_${option.id}`}>
-                              {option.content}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </FormItem>
-                  );
-                }
-                return null;
-              })
+              if (attribute.options.length > 0) {
+                return (
+                  <FormItem
+                    {...formItemLayout}
+                    label={attribute.name}
+                    name={`attribute_${attribute.name}`}
+                    key={`${attribute.id}`}
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择一个选项',
+                      },
+                    ]}
+                  >
+                    <Select>
+                      {attribute.options.map((option) => {
+                        return (
+                          <Option value={option.content} key={`${attribute.id}_${option.id}`}>
+                            {option.content}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </FormItem>
+                );
+              }
+              return null;
+            })
             : null}
 
           <FormItem
@@ -287,6 +327,6 @@ const Detail = () => {
   );
 };
 
-export default connect(({ loading }) => ({
+export default connect(({loading}) => ({
   submitting: loading.effects['productAndDetail/submitRegularForm'],
 }))(Detail);

@@ -91,49 +91,81 @@ export default {
       data: {},
     });
   },
-
-  'GET /api/category/attributes': {
-    msg: '操作成功',
-    code: 200,
-    data: {
-      attributes: [
-        {
-          id: 1,
-          categoryId: 2,
-          name: '颜色',
-          options: [
+  'GET /api/category/attributes': (req, res) => {
+    const { categoryId } = req.query;
+    if(categoryId === '11'){
+      res.send({
+        code: 200,
+        msg: '',
+        data: {
+          attributes: [
+            {
+              id: 1,
+              categoryId: 2,
+              name: '颜色',
+              options: [
+                {
+                  id: 2,
+                  attributeId: 1,
+                  content: '红色',
+                },
+                {
+                  id: 3,
+                  attributeId: 1,
+                  content: '蓝色',
+                },
+              ],
+            },
             {
               id: 2,
-              attributeId: 1,
-              content: '红色',
+              categoryId: 2,
+              name: '品牌',
+              options: [
+                {
+                  id: 4,
+                  attributeId: 1,
+                  content: '汪汪',
+                },
+                {
+                  id: 6,
+                  attributeId: 1,
+                  content: '海王',
+                },
+              ],
             },
+          ],
+        },
+      });
+    }else{
+      res.send({
+        code: 200,
+        msg: '',
+        data: {
+          attributes: [
             {
               id: 3,
-              attributeId: 1,
-              content: '蓝色',
-            },
+              categoryId: 12,
+              name: '尺寸',
+              options: [
+                {
+                  id: 5,
+                  attributeId: 1,
+                  content: '大',
+                },
+                {
+                  id: 6,
+                  attributeId: 1,
+                  content: '小',
+                },
+              ],
+            }
           ],
         },
-        {
-          id: 2,
-          categoryId: 2,
-          name: '品牌',
-          options: [
-            {
-              id: 4,
-              attributeId: 1,
-              content: '汪汪',
-            },
-            {
-              id: 6,
-              attributeId: 1,
-              content: '海王',
-            },
-          ],
-        },
-      ],
-    },
+      });
+    }
+
   },
+
 
   'DELETE /api/category/specifications/1': (req, res) => {
     res.send({
@@ -188,7 +220,16 @@ export default {
           id: 1,
           categoryId: 2,
           name: '尺寸',
-          options: [],
+          options: [{
+            id: 4,
+            specificationId: 2,
+            content: '大',
+          },
+            {
+              id: 5,
+              specificationId: 2,
+              content: '小',
+            }],
         },
         {
           id: 2,
@@ -212,12 +253,6 @@ export default {
             },
           ],
         },
-        {
-          id: 3,
-          categoryId: 2,
-          name: '大小',
-          options: [],
-        },
       ],
     },
   },
@@ -240,6 +275,7 @@ export default {
           coverUrl: 'localhost12346.jpg',
           price: '50.00',
           originalPrice: '100.00',
+          expressPrice:'5.00',
           saleNum: 0,
           lastNum: 107,
           deleteFlag: 0,
@@ -260,6 +296,7 @@ export default {
           coverUrl: 'localhost12345.jpg',
           price: '40.00',
           originalPrice: '400.00',
+          expressPrice:'5.00',
           saleNum: 2,
           lastNum: 107,
           deleteFlag: 0,
@@ -300,6 +337,7 @@ export default {
           coverUrl: 'localhost1235.jpg',
           price: '20.00',
           originalPrice: '200.00',
+          expressPrice:'5.00',
           saleNum: 1,
           lastNum: 101,
           deleteFlag: 0,
@@ -320,6 +358,7 @@ export default {
           coverUrl: 'localhost1235.jpg',
           price: '50.00',
           originalPrice: '100.00',
+          expressPrice:'5.00',
           saleNum: 25,
           lastNum: 13,
           deleteFlag: 0,
@@ -342,12 +381,13 @@ export default {
         name: '新商品1',
         categoryId: 11,
         mode: 1,
-        stockType: 1,
-        statusType: 1,
-        description: '',
-        coverUrl: '1235.jpg',
+        stockType: '1',
+        statusType: '1',
+        description: 'xsfd',
+        coverUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
         price: '50.00',
         originalPrice: '100.00',
+        expressPrice:'5.00',
         saleNum: 25,
         lastNum: 13,
         deleteFlag: 0,
@@ -363,7 +403,7 @@ export default {
             id: 19,
             detailId: 13,
             name: '品牌',
-            content: '丽友',
+            content: '海王',
           },
         ],
         detailImages: [

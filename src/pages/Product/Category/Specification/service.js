@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 
-export async function queryProductCategorySpecification(categoryId) {
+export async function queryProductCategorySpecification(params) {
   return request('/api/category/specifications', {
-    categoryId,
+    params,
   });
 }
 

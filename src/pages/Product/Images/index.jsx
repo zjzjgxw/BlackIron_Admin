@@ -1,8 +1,8 @@
-import { Button, Card, Divider, message, Modal, Space, Upload } from 'antd';
-import { connect } from 'umi';
-import React, { useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { isSuccess } from '@/utils/utils';
+import {Button, Card, Divider, message, Modal, Space, Upload} from 'antd';
+import {connect, history} from 'umi';
+import React, {useEffect, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import {isSuccess} from '@/utils/utils';
 import {
   DeleteFilled,
   DownCircleFilled,
@@ -10,7 +10,7 @@ import {
   PlusOutlined,
   UpCircleFilled,
 } from '@ant-design/icons';
-import { queryProductDetails } from '@/pages/Product/Images/service';
+import {queryProductDetails} from '@/pages/Product/Images/service';
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ const compareImage = function (obj1, obj2) {
 };
 
 const ProductImages = (props) => {
-  const { match } = props;
+  const {match} = props;
 
   const [loading, setLoading] = useState(false);
   const [detailloading, setDetailLoading] = useState(false);
@@ -149,14 +149,14 @@ const ProductImages = (props) => {
 
   const uploadButton = (
     <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>上传</div>
+      {loading ? <LoadingOutlined/> : <PlusOutlined/>}
+      <div style={{marginTop: 8}}>上传</div>
     </div>
   );
   const detailUploadButton = (
     <div>
-      {detailloading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>上传</div>
+      {detailloading ? <LoadingOutlined/> : <PlusOutlined/>}
+      <div style={{marginTop: 8}}>上传</div>
     </div>
   );
 
@@ -221,7 +221,7 @@ const ProductImages = (props) => {
       <Card bordered={false}>
         <div>
           <p>主图：(建议尺寸：800*800像素)</p>
-          <Divider />
+          <Divider/>
 
           <Upload
             name="file"
@@ -242,14 +242,14 @@ const ProductImages = (props) => {
             footer={null}
             onCancel={() => setPreviewVisible(false)}
           >
-            <img alt="example" style={{ width: '100%' }} src={previewImage} />
+            <img alt="example" style={{width: '100%'}} src={previewImage}/>
           </Modal>
         </div>
-        <Divider />
+        <Divider/>
 
         <div>
           <p>商品图：(建议尺寸：800*800像素)</p>
-          <Divider />
+          <Divider/>
 
           <Upload
             name="file"
@@ -262,45 +262,45 @@ const ProductImages = (props) => {
           >
             {detailUploadButton}
           </Upload>
-          <Card bordered={false} style={{ width: '800px' }}>
+          <Card bordered={false} style={{width: '800px'}}>
             {detailImageList &&
-              detailImageList.map((item) => {
-                return (
-                  <div style={{ display: 'flex' }} key={item.indexNo}>
-                    <div
-                      style={{
-                        position: 'absolute',
-                        right: '20px',
-                        background: '#ffffff',
-                      }}
-                    >
-                      <Space size="small">
-                        <UpCircleFilled onClick={() => moveUpDetailImage(item)} />
-                        <DownCircleFilled onClick={() => moveDownDetailImage(item)} />
-                        <DeleteFilled
-                          onClick={() => removeDetailImage(item)}
-                          style={{ fontSize: '20px' }}
-                        />
-                      </Space>
-                    </div>
-
-                    <img
-                      alt="example"
-                      key={item.indexNo}
-                      style={{ width: '100%' }}
-                      src={item.imgUrl}
-                    />
+            detailImageList.map((item) => {
+              return (
+                <div style={{display: 'flex'}} key={item.indexNo}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      right: '20px',
+                      background: '#ffffff',
+                    }}
+                  >
+                    <Space size="small">
+                      <UpCircleFilled onClick={() => moveUpDetailImage(item)}/>
+                      <DownCircleFilled onClick={() => moveDownDetailImage(item)}/>
+                      <DeleteFilled
+                        onClick={() => removeDetailImage(item)}
+                        style={{fontSize: '20px'}}
+                      />
+                    </Space>
                   </div>
-                );
-              })}
+
+                  <img
+                    alt="example"
+                    key={item.indexNo}
+                    style={{width: '100%'}}
+                    src={item.imgUrl}
+                  />
+                </div>
+              );
+            })}
           </Card>
         </div>
 
         <Space size="large">
-          <Button type="primary" htmlType="submit" onClick={onSave}>
+          <Button type="primary" onClick={onSave}>
             保存
           </Button>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" onClick={() => history.push(`/product/${match.params.id}/stock`)}>
             库存设置
           </Button>
         </Space>
