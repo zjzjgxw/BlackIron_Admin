@@ -193,6 +193,12 @@ export default defineConfig({
               ],
             },
             {
+              name: 'order',
+              icon: 'smile',
+              path: '/order/list',
+              component: './Order/Index',
+            },
+            {
               component: './404',
             },
           ],
