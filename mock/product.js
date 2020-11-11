@@ -93,7 +93,7 @@ export default {
   },
   'GET /api/category/attributes': (req, res) => {
     const { categoryId } = req.query;
-    if(categoryId === '11'){
+    if (categoryId === '11') {
       res.send({
         code: 200,
         msg: '',
@@ -136,7 +136,7 @@ export default {
           ],
         },
       });
-    }else{
+    } else {
       res.send({
         code: 200,
         msg: '',
@@ -158,14 +158,12 @@ export default {
                   content: '小',
                 },
               ],
-            }
+            },
           ],
         },
       });
     }
-
   },
-
 
   'DELETE /api/category/specifications/1': (req, res) => {
     res.send({
@@ -219,21 +217,6 @@ export default {
         {
           id: 1,
           categoryId: 2,
-          name: '尺寸',
-          options: [{
-            id: 4,
-            specificationId: 2,
-            content: '大',
-          },
-            {
-              id: 5,
-              specificationId: 2,
-              content: '小',
-            }],
-        },
-        {
-          id: 2,
-          categoryId: 2,
           name: '颜色',
           options: [
             {
@@ -250,6 +233,28 @@ export default {
               id: 3,
               specificationId: 2,
               content: '蓝色',
+            },
+          ],
+        },
+        {
+          id: 2,
+          categoryId: 2,
+          name: '尺寸',
+          options: [
+            {
+              id: 4,
+              specificationId: 2,
+              content: '大',
+            },
+            {
+              id: 6,
+              specificationId: 2,
+              content: '中',
+            },
+            {
+              id: 5,
+              specificationId: 2,
+              content: '小',
             },
           ],
         },
@@ -275,7 +280,7 @@ export default {
           coverUrl: 'localhost12346.jpg',
           price: '50.00',
           originalPrice: '100.00',
-          expressPrice:'5.00',
+          expressPrice: '5.00',
           saleNum: 0,
           lastNum: 107,
           deleteFlag: 0,
@@ -296,7 +301,7 @@ export default {
           coverUrl: 'localhost12345.jpg',
           price: '40.00',
           originalPrice: '400.00',
-          expressPrice:'5.00',
+          expressPrice: '5.00',
           saleNum: 2,
           lastNum: 107,
           deleteFlag: 0,
@@ -337,7 +342,7 @@ export default {
           coverUrl: 'localhost1235.jpg',
           price: '20.00',
           originalPrice: '200.00',
-          expressPrice:'5.00',
+          expressPrice: '5.00',
           saleNum: 1,
           lastNum: 101,
           deleteFlag: 0,
@@ -358,7 +363,7 @@ export default {
           coverUrl: 'localhost1235.jpg',
           price: '50.00',
           originalPrice: '100.00',
-          expressPrice:'5.00',
+          expressPrice: '5.00',
           saleNum: 25,
           lastNum: 13,
           deleteFlag: 0,
@@ -387,7 +392,7 @@ export default {
         coverUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
         price: '50.00',
         originalPrice: '100.00',
-        expressPrice:'5.00',
+        expressPrice: '5.00',
         saleNum: 25,
         lastNum: 13,
         deleteFlag: 0,
