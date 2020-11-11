@@ -199,6 +199,13 @@ export default defineConfig({
               component: './Order/Index',
             },
             {
+              name: 'order-detail',
+              icon: 'smile',
+              path: '/order/detail/:id',
+              hideInMenu: true,
+              component: './Order/Detail',
+            },
+            {
               component: './404',
             },
           ],

@@ -1,7 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
 import {
-  Avatar,
   Button,
   Card,
   Col,
@@ -17,17 +16,12 @@ import {
 } from 'antd';
 import {findDOMNode} from 'react-dom';
 import {PageContainer} from '@ant-design/pro-layout';
-import {connect} from 'umi';
-import moment from 'moment';
+import {connect, history} from 'umi';
 import OperationModal from './components/OperationModal';
 import styles from './style.less';
 import OrderItem from "@/pages/Order/Index/components/OrderItem";
 import ExpressModal from "@/pages/Order/Index/components/ExpressModal";
-import {editPermission} from "@/pages/Admin/Permission/service";
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const {Search} = Input;
 
 const Info = ({title, value, bordered}) => (
   <div className={styles.headerInfo}>
@@ -37,28 +31,6 @@ const Info = ({title, value, bordered}) => (
   </div>
 );
 
-const ListContent = ({data: {owner, createdAt, percent, status}}) => (
-  <div className={styles.listContent}>
-    <div className={styles.listContentItem}>
-      <span>Owner</span>
-      <p>{owner}</p>
-    </div>
-    <div className={styles.listContentItem}>
-      <span>开始时间</span>
-      <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
-    </div>
-    <div className={styles.listContentItem}>
-      <Progress
-        percent={percent}
-        status={status}
-        strokeWidth={6}
-        style={{
-          width: 180,
-        }}
-      />
-    </div>
-  </div>
-);
 
 export const Index = (props) => {
   const addBtn = useRef(null);
@@ -282,7 +254,7 @@ export const Index = (props) => {
                 <List.Item
                   actions={[
                     <a
-                      key="send"
+                      key={`send_${item.id}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setExpressModalVisible(true);
@@ -296,17 +268,17 @@ export const Index = (props) => {
                       发货
                     </a>,
                     <a
-                      key="detail"
+                      key={`detail_${item.id}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        showEditModal(item);
+                        history.push(`/order/detail/${item.id}`)
                       }}
                     >
                       详情
                     </a>,
                   ]}
                 >
-                  <OrderItem order={item}/>
+                  <OrderItem key={`item_${item.id}`} order={item}/>
 
                 </List.Item>
               )}

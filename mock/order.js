@@ -1,5 +1,5 @@
 export default {
-  'GET /api/expresses':{
+  'GET /api/expresses': {
     "msg": "操作成功",
     "code": 200,
     "data": {
@@ -40,6 +40,74 @@ export default {
           "word": "EMS"
         }
       ]
+    }
+  },
+  'GET /api/orders/detail/16': {
+    "msg": "操作成功",
+    "code": 200,
+    "data": {
+      "info":
+        {
+          "id": 16,
+          "businessId": 2,
+          "businessName": "商户1",
+          "userId": 3,
+          "code": "DlyA4k1603721238",
+          "price": 40000,
+          "originalPrice": 40000,
+          "expressPrice": 0,
+          "expressId": 1,
+          "expressCode": "ddsf23341",
+          "receiver": "gxw39",
+          "telphone": "123453323224",
+          "address": "上海市 浦东新区 阳光花园101",
+          "status": {
+            "index": 1,
+            "text": "待支付"
+          },
+          "createTime": "2020-10-26 22:07:18",
+          "payTime": null,
+          "sendTime": null,
+          "couponId": null,
+          "remark": "",
+          "items": [
+            {
+              "id": 14,
+              "orderId": 16,
+              "name": "新商品555",
+              "productId": 16,
+              "coverUrl": "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+              "specificationId": 23,
+              "firstSpecificationName": "颜色",
+              "firstSpecificationValue": "褐色",
+              "secondSpecificationName": null,
+              "secondSpecificationValue": null,
+              "productSnap": null,
+              "price": 40000,
+              "originalPrice": 40000,
+              "num": 2,
+              "stockType": 2,
+              "createTime": null
+            }, {
+              "id": 3,
+              "orderId": 4,
+              "name": "新商品2",
+              "productId": 14,
+              "coverUrl": "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+              "specificationId": 0,
+              "firstSpecificationName": null,
+              "firstSpecificationValue": null,
+              "secondSpecificationName": null,
+              "secondSpecificationValue": null,
+              "productSnap": null,
+              "price": 1968,
+              "originalPrice": 1468,
+              "num": 1,
+              "stockType": 1,
+              "createTime": null
+            }
+          ]
+        },
     }
   },
   'GET  /api/orders': {
