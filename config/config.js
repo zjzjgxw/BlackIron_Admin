@@ -206,6 +206,19 @@ export default defineConfig({
               component: './Order/Detail',
             },
             {
+              name: 'sales',
+              icon: 'smile',
+              path: '/sales',
+              routes: [
+                {
+                  name: 'discount',
+                  icon: 'ProfileOutlined',
+                  path: '/sales/discount',
+                  component: './Sales/Discount',
+                },
+              ],
+            },
+            {
               component: './404',
             },
           ],

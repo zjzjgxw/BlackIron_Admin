@@ -22,8 +22,8 @@ export default {
   'menu.product.create': '创建商品',
   'menu.product.images': '商品描述',
   'menu.product.stock': '商品库存',
-  'menu.order':'订单管理',
-  'menu.order-detail':'订单详情',
+  'menu.order': '订单管理',
+  'menu.order-detail': '订单详情',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register.result': '注册结果',
@@ -69,4 +69,6 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
+  'menu.sales': '促销活动',
+  'menu.sales.discount': '限时折扣',
 };
