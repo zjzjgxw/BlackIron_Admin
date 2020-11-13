@@ -71,4 +71,5 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.sales': '促销活动',
   'menu.sales.discount': '限时折扣',
+  'menu.sales.coupon': '优惠券',
 };

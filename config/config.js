@@ -216,6 +216,12 @@ export default defineConfig({
                   path: '/sales/discount',
                   component: './Sales/Discount',
                 },
+                {
+                  name: 'coupon',
+                  icon: 'ProfileOutlined',
+                  path: '/sales/coupon',
+                  component: './Sales/Coupon',
+                },
               ],
             },
             {

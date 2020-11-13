@@ -48,7 +48,9 @@ const CreateForm = (props) => {
         id: info.id,
         name: info.name,
         content: info.content,
-        discount: info.discount,
+        price: info.price,
+        targetPrice: info.target,
+        num: info.num,
         mode: `${info.mode}`,
         dateTimeRange: [moment(info.startTime), moment(info.endTime)],
       });
@@ -60,7 +62,7 @@ const CreateForm = (props) => {
   return (
     <Modal
       destroyOnClose
-      title={info ? '修改活动' : '创建活动'}
+      title={info ? '修改优惠券' : '创建优惠券'}
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}
@@ -76,31 +78,46 @@ const CreateForm = (props) => {
 
         <ProFormText
           name="name"
-          label="活动名称"
-          placeholder="请输入活动名称"
+          label="优惠券名称"
+          placeholder="请输入优惠券名称"
           rules={[
-            { required: true, message: '请输入活动名称！' },
-            { min: 1, max: 20, message: '活动名称长度请保持在1-20个字符之内' },
+            { required: true, message: '请输入优惠券名称！' },
+            { min: 1, max: 20, message: '优惠券名称长度请保持在1-20个字符之内' },
           ]}
         />
         <ProFormTextArea
           name="content"
           label="描述"
           width="l"
-          placeholder="请输入活动描述"
+          placeholder="请输入优惠券描述"
           rules={[
-            { required: true, message: '请输入活动描述！' },
-            { min: 1, max: 100, message: '活动描述长度请保持在100个字符之内' },
+            { required: true, message: '请输入优惠券描述！' },
+            { min: 1, max: 100, message: '优惠券描述长度请保持在100个字符之内' },
           ]}
         />
 
         <ProFormDigit
-          label="折扣（%）"
-          name="discount"
+          label="抵扣金额"
+          name="price"
           min={1}
-          max={100}
+          fieldProps={{ precision: 2 }}
+          rules={[{ required: true, message: '请输入满减' }]}
+        />
+
+        <ProFormDigit
+          label="满减金额"
+          name="targetPrice"
+          min={0}
+          fieldProps={{ precision: 2 }}
+          rules={[{ required: true, message: '请输入满减' }]}
+        />
+
+        <ProFormDigit
+          label="数量"
+          name="num"
+          min={0}
           fieldProps={{ precision: 0 }}
-          rules={[{ required: true, message: '请输入折扣' }]}
+          rules={[{ required: true, message: '请输入优惠券数量' }]}
         />
 
         <ProFormSelect

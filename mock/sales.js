@@ -88,4 +88,72 @@ export default {
       data: {},
     });
   },
+
+  'POST /api/coupons': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {
+        id: 1,
+      },
+    });
+  },
+  'DELETE /api/coupons/12': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {},
+    });
+  },
+  'PUT /api/coupons': (req, res) => {
+    res.send({
+      code: 200,
+      msg: '',
+      data: {},
+    });
+  },
+
+  'GET /api/coupons': {
+    msg: '操作成功',
+    code: 200,
+    data: {
+      total: 6,
+      rows: [
+        {
+          id: 12,
+          staffId: 3,
+          businessId: 2,
+          name: '满10减3',
+          content: '满10减3',
+          price: 300,
+          targetPrice: 1000,
+          startTime: '2020-10-24 00:00:00',
+          endTime: '2020-11-24 00:00:00',
+          mode: 0,
+          num: 100,
+          products: [],
+          users: [],
+          deleteFlag: 0,
+          createTime: '2020-10-25 16:17:21',
+        },
+        {
+          id: 11,
+          staffId: 3,
+          businessId: 2,
+          name: '满200减10',
+          content: '满200减10',
+          price: 1000,
+          targetPrice: 20000,
+          startTime: '2020-10-24 00:00:00',
+          endTime: '2020-11-24 00:00:00',
+          mode: 1,
+          num: 99,
+          products: [14],
+          users: [],
+          deleteFlag: 0,
+          createTime: '2020-10-25 16:09:24',
+        },
+      ],
+    },
+  },
 };

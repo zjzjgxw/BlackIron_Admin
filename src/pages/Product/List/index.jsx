@@ -29,7 +29,7 @@ export default () => {
   };
   const [categories, setCategories] = useState([]);
   const queryProductData = async (params) => {
-    const res = await queryProducts(params);
+    const res = await queryProducts({ ...params, pageNum: params.current });
     if (isSuccess(res)) {
       const result = await queryProductCategory({});
       if (isSuccess(result)) {
@@ -103,9 +103,14 @@ export default () => {
       dataIndex: 'id',
       render: (text, row, _, action) => [
         <a key={row.id}>库存管理</a>,
-        <a key={row.id} onClick={() => {
-          history.push(`/product/detail/${row.id}`);
-        }}>编辑</a>,
+        <a
+          key={row.id}
+          onClick={() => {
+            history.push(`/product/detail/${row.id}`);
+          }}
+        >
+          编辑
+        </a>,
         <Popconfirm
           key={row.id}
           title="确定删除？"
