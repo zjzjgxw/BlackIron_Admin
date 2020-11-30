@@ -1,18 +1,24 @@
-import {PageContainer} from '@ant-design/pro-layout';
-import React, {useState, useEffect, useRef} from 'react';
-import {Button, message, Spin} from 'antd';
+import { PageContainer } from '@ant-design/pro-layout';
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, message, Spin } from 'antd';
 import styles from './index.less';
-import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
-import ProTable from "@ant-design/pro-table";
+import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
+import ProTable from '@ant-design/pro-table';
 import { history } from 'umi';
-import {isSuccess} from "@/utils/utils";
-import Popconfirm from "antd/es/popconfirm";
-import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
-import {queryRoles, addRole, deleteRole, addRoleMember, updateRole} from "@/pages/Admin/Role/service";
-import CreateForm from "@/pages/Admin/Role/components/CreateForm";
-import EditMemberForm from "@/pages/Admin/Role/components/EditMemberForm";
-import UpdateForm from "@/pages/Admin/Role/components/UpdateForm";
-import {queryAdmins} from "@/pages/Admin/home/service";
+import { isSuccess } from '@/utils/utils';
+import Popconfirm from 'antd/es/popconfirm';
+import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
+import {
+  queryRoles,
+  addRole,
+  deleteRole,
+  addRoleMember,
+  updateRole,
+} from '@/pages/Admin/Role/service';
+import CreateForm from '@/pages/Admin/Role/components/CreateForm';
+import EditMemberForm from '@/pages/Admin/Role/components/EditMemberForm';
+import UpdateForm from '@/pages/Admin/Role/components/UpdateForm';
+import { queryAdmins } from '@/pages/Admin/home/service';
 
 const queryRoleData = async (params) => {
   const res = await queryRoles(params);
@@ -20,27 +26,25 @@ const queryRoleData = async (params) => {
     const data = {
       data: res.data.roles,
       total: res.data.roles.length,
-      success: true
+      success: true,
     };
     return data;
   }
-  return {}
+  return {};
 };
-
 
 const queryAdminsData = async () => {
   const res = await queryAdmins({});
   if (isSuccess(res)) {
     const data = [];
-    const admins = res.data.admins;
+    const admins = res.data.rows;
     for (let i = 0; i < admins.length; i += 1) {
-      data.push({label: admins[i].name, value: admins[i].id})
+      data.push({ label: admins[i].name, value: admins[i].id });
     }
     return data;
   }
-  return {}
+  return {};
 };
-
 
 export default () => {
   const [createModalVisible, handleModalVisible] = useState(false);
@@ -48,7 +52,6 @@ export default () => {
   const [editMemberModalVisible, handleEditMemberModalVisible] = useState(false);
   const [memberInfo, setMemberInfo] = useState({});
   const [role, setRole] = useState({});
-
 
   const actionRef = useRef();
 
@@ -64,13 +67,13 @@ export default () => {
       copyable: true,
     },
     {
-      dataIndex: 'admins',
+      dataIndex: 'staffs',
       title: '用户',
       render: (_, record) => {
-        const {admins = []} = record;
+        const { staffs = [] } = record;
 
         const names = [];
-        admins.forEach((item) => {
+        staffs.forEach((item) => {
           names.push(item.name);
         });
         return names && names.length > 0 ? names.join('、') : '无';
@@ -81,32 +84,49 @@ export default () => {
       valueType: 'option',
       dataIndex: 'id',
       render: (text, row, _, action) => [
-        <a key={row.id} onClick={() => {
-          handleUpdateModalVisible(true);
-          setRole(row);
-        }}>
+        <a
+          key={row.id}
+          onClick={() => {
+            handleUpdateModalVisible(true);
+            setRole(row);
+          }}
+        >
           更新
         </a>,
-        <a key={row.id} onClick={() => {
-          handleEditMemberModalVisible(true);
-          const ids = [];
-          for (let i = 0; i < row.admins.length; i += 1) {
-            ids.push(row.admins[i].id);
-          }
-          setMemberInfo({id: row.id, adminIds: ids});
-        }}>
+        <a
+          key={row.id}
+          onClick={() => {
+            handleEditMemberModalVisible(true);
+            const ids = [];
+            for (let i = 0; i < row.staffs.length; i += 1) {
+              ids.push(row.staffs[i].id);
+            }
+            setMemberInfo({ id: row.id, adminIds: ids });
+          }}
+        >
           管理成员
         </a>,
-        <a key={row.id}  onClick={()=>{history.push(`/admin/role/${row.id}/permission`);}}>权限管理</a>,
-        <Popconfirm key={row.id} title="确定删除？" icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
-                    onConfirm={async () => {
-                      const res = await deleteRole(row.id);
-                      if (isSuccess(res)) {
-                        action.reload();
-                      }
-                    }}>
+        <a
+          key={row.id}
+          onClick={() => {
+            history.push(`/admin/role/${row.id}/permission`);
+          }}
+        >
+          权限管理
+        </a>,
+        <Popconfirm
+          key={row.id}
+          title="确定删除？"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={async () => {
+            const res = await deleteRole(row.id);
+            if (isSuccess(res)) {
+              action.reload();
+            }
+          }}
+        >
           <a key={row.id}>删除</a>
-        </Popconfirm>
+        </Popconfirm>,
       ],
     },
   ];
@@ -122,31 +142,34 @@ export default () => {
           size="small"
           columns={columns}
           actionRef={actionRef}
-          request={(params, sorter, filter) => queryRoleData({...params, sorter, filter})}
+          request={(params, sorter, filter) => queryRoleData({ ...params, sorter, filter })}
           rowKey="id"
           toolBarRender={() => [
             <Button key="addAdminButton" type="primary" onClick={() => handleModalVisible(true)}>
-              <PlusOutlined/>
+              <PlusOutlined />
               新建
             </Button>,
           ]}
         />
 
-        <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}
-                    onSubmit={async (fields) => {
-                      try {
-                        const res  = await addRole({...fields});
-                        if(isSuccess(res)){
-                          message.success('添加成功');
-                          actionRef.current.reload();
-                          handleModalVisible(false);
-                        }
-                        return true;
-                      } catch (error) {
-                        message.error('添加失败请重试！');
-                        return false;
-                      }
-                    }}/>
+        <CreateForm
+          onCancel={() => handleModalVisible(false)}
+          modalVisible={createModalVisible}
+          onSubmit={async (fields) => {
+            try {
+              const res = await addRole({ ...fields });
+              if (isSuccess(res)) {
+                message.success('添加成功');
+                actionRef.current.reload();
+                handleModalVisible(false);
+              }
+              return true;
+            } catch (error) {
+              message.error('添加失败请重试！');
+              return false;
+            }
+          }}
+        />
 
         {memberInfo && Object.keys(memberInfo).length ? (
           <EditMemberForm
@@ -161,13 +184,16 @@ export default () => {
               console.log(fields);
               try {
                 const params = [];
-                for (let i = 0; i < fields.selectedAdmins.length; i += 1){
-                  params.push({roleId:fields.id,adminId:fields.selectedAdmins[i]})
+                for (let i = 0; i < fields.selectedAdmins.length; i += 1) {
+                  params.push({ roleId: fields.id, staffId: fields.selectedAdmins[i] });
                 }
-                await addRoleMember(params);
-                message.success('添加成功');
-                handleEditMemberModalVisible(false);
-                setMemberInfo({});
+                const res = await addRoleMember(params);
+                if (isSuccess(res)) {
+                  message.success('添加成功');
+                  handleEditMemberModalVisible(false);
+                  setMemberInfo({});
+                  actionRef.current.reload();
+                }
                 return true;
               } catch (error) {
                 message.error('添加失败请重试！');
@@ -175,7 +201,8 @@ export default () => {
                 setMemberInfo({});
                 return false;
               }
-            }}/>
+            }}
+          />
         ) : null}
 
         {role && Object.keys(role).length ? (
@@ -189,7 +216,7 @@ export default () => {
             onSubmit={async (fields) => {
               try {
                 const res = await updateRole(fields);
-                if(isSuccess(res)){
+                if (isSuccess(res)) {
                   message.success('更新成功');
                   actionRef.current.reload();
                   handleUpdateModalVisible(false);
@@ -202,10 +229,9 @@ export default () => {
                 setRole({});
                 return false;
               }
-            }}/>
+            }}
+          />
         ) : null}
-
-
       </div>
     </PageContainer>
   );

@@ -1,4 +1,9 @@
-import {queryAllPermissions, queryRolePermissions} from "@/pages/Admin/Role/Permission/service";
+import {
+  queryAllPermissions,
+  queryRolePermissions,
+  saveRolePermissions,
+} from '@/pages/Admin/Role/Permission/service';
+import { isSuccess } from '@/utils/utils';
 
 const Model = {
   namespace: 'permission',
@@ -7,36 +12,44 @@ const Model = {
     permissionIds: undefined,
   },
   effects: {
-    * queryAll({payload}, {call, put}) {
+    *queryAll({ payload }, { call, put }) {
       const response = yield call(queryAllPermissions, payload);
-      if (response.code === 200) {
+      if (isSuccess(response)) {
         yield put({
           type: 'setPermissions',
-          payload: {groups: response.data.groups}
+          payload: { groups: response.data.groups },
         });
       }
     },
 
-    * queryRolePermissions({payload}, {call, put}) {
+    *queryRolePermissions({ payload }, { call, put }) {
       const response = yield call(queryRolePermissions, payload);
-      if (response.code === 200) {
+      if (isSuccess(response)) {
         yield put({
           type: 'setPermissionsOfRole',
-          payload: {permissions: response.data.permissions}
+          payload: { permissions: response.data },
         });
-        return response.data.permissions;
-      }else{
-        return null;
+        return response.data;
       }
+      return {};
+    },
+
+    *saveRolePermissions({ payload }, { call }) {
+      console.log(payload);
+      const response = yield call(saveRolePermissions, payload);
+      if (isSuccess(response)) {
+        return true;
+      }
+      return false;
     },
   },
   reducers: {
-    setPermissions(state, {payload}) {
-      return {...state, ...payload};
+    setPermissions(state, { payload }) {
+      return { ...state, ...payload };
     },
-    setPermissionsOfRole(state, {payload}) {
-      return {...state, permissionIds: payload.permissions}
-    }
+    setPermissionsOfRole(state, { payload }) {
+      return { ...state, permissionIds: payload.permissions };
+    },
   },
 };
 export default Model;

@@ -1,35 +1,27 @@
-import {PageContainer} from '@ant-design/pro-layout';
-import React, {Component, useState, useEffect} from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import React, { Component } from 'react';
 import styles from './index.less';
-import ProForm, {ProFormCheckbox} from "@ant-design/pro-form";
-import {connect, history} from "umi";
-import {Form, Button} from "antd";
-
+import ProForm, { ProFormCheckbox } from '@ant-design/pro-form';
+import { connect, history } from 'umi';
+import { Form, Button } from 'antd';
 
 const groupItem = (group) => {
-  const {id, name, permissions} = group;
+  const { id, name, permissions } = group;
   const options = [];
   for (let i = 0; i < permissions.length; i += 1) {
-    options.push({label: permissions[i].name, value: permissions[i].id});
+    options.push({ label: permissions[i].name, value: permissions[i].id });
   }
-  return <ProFormCheckbox.Group
-    key={id}
-    name={id}
-    label={name}
-    options={options}
-  />;
+  return <ProFormCheckbox.Group key={id} name={id} label={name} options={options} />;
 };
 
-
 class Permissions extends Component {
-
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
   }
 
   componentDidMount() {
-    const {dispatch, match} = this.props;
+    const { dispatch, match } = this.props;
 
     dispatch({
       type: 'permission/queryAll',
@@ -37,19 +29,30 @@ class Permissions extends Component {
     });
     dispatch({
       type: 'permission/queryRolePermissions',
-      payload: {roleId: match.params.id}
-    }).then(res => {
+      payload: { roleId: match.params.id },
+    }).then((res) => {
       this.formRef.current.setFieldsValue(res);
     });
   }
 
-
   render() {
-    const {permission} = this.props;
-    const {groups} = permission;
+    const { permission, dispatch, match } = this.props;
+    const { groups } = permission;
 
-    const onFinish = values => {
-      console.log('Received values of form: ', values);
+    const onFinish = (values) => {
+      const permissionIds = [];
+      for (const key in values) {
+        if (Array.isArray(values[key])) {
+          values[key].forEach((item) => {
+            permissionIds.push(item);
+          });
+        }
+      }
+      dispatch({
+        type: 'permission/saveRolePermissions',
+        payload: { roleId: match.params.id, permissions: permissionIds },
+      });
+
       history.goBack();
     };
 
@@ -61,11 +64,10 @@ class Permissions extends Component {
           }}
         >
           <Form ref={this.formRef} onFinish={onFinish}>
-            {
-              groups && groups.map((item) => {
+            {groups &&
+              groups.map((item) => {
                 return groupItem(item);
-              })
-            }
+              })}
 
             <Form.Item>
               <Button type="primary" htmlType="submit">
@@ -79,6 +81,6 @@ class Permissions extends Component {
   }
 }
 
-export default connect(({permission}) => ({
+export default connect(({ permission }) => ({
   permission,
 }))(Permissions);
