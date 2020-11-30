@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Input, Modal, Upload} from 'antd';
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
-import ProForm, {ProFormText, ProFormUploadButton, ProFormRadio} from '@ant-design/pro-form';
+import ProForm, {ProFormText, ProFormRadio} from '@ant-design/pro-form';
 import FormItem from "antd/es/form/FormItem";
 import {isSuccess} from "@/utils/utils";
 
@@ -14,28 +14,21 @@ const CreateForm = (props) => {
 
 
   const handleChange = info => {
-
     if (info.file.status === 'uploading') {
-      console.log('uploading');
-      console.log(info);
       setLoading(true);
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      console.log('done');
-      console.log(info);
       setLoading(false);
       const res = info.file.response;
       if(isSuccess(res)){
-        setImageUrl(res.data.filePath);
+        setImageUrl(res.data.url);
       }
 
     }
   };
 
   const normFile = e => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -47,7 +40,7 @@ const CreateForm = (props) => {
       {loading ? <LoadingOutlined/> : <PlusOutlined/>}
       <div style={{marginTop: 8}}>上传</div>
     </div>
-  )
+  );
   return (
     <Modal
       destroyOnClose
@@ -77,8 +70,8 @@ const CreateForm = (props) => {
           {min: 1, max: 25, message: '用户名长度请保持在6-20个字符之内'},
         ]}/>
         <ProFormRadio.Group
-          name="adminFlag"
-          label="是否为超级管理员"
+          name="admin"
+          label="是否为管理员"
           options={[
             {
               label: '否',
@@ -90,7 +83,7 @@ const CreateForm = (props) => {
             },
 
           ]}
-          rules={[{required: true, message: '请选择是否为超级管理员'},
+          rules={[{required: true, message: '请选择是否为管理员'},
           ]}
         />
         <ProFormText name="email" label="邮箱" placeholder="请输入邮箱" rules={[
@@ -108,7 +101,7 @@ const CreateForm = (props) => {
             listType="picture-card"
             className="avatar-uploader"
             showUploadList={false}
-            action="/upload/img"
+            action="/api/files/images/localUpload"
             onChange={(info)=>handleChange(info)}
           >
             {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}

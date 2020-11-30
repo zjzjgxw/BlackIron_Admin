@@ -5,7 +5,7 @@ export default {
       code: 200,
       data: {
         path: '/img.jpg',
-        filePath: 'https://img95.699pic.com/photo/40100/6015.jpg_wh300.jpg',
+        url: 'https://img95.699pic.com/photo/40100/6015.jpg_wh300.jpg',
       },
     });
   },

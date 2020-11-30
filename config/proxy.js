@@ -18,14 +18,14 @@ const { REACT_APP_ENV = 'idc' } = process.env;
 export default {
   dev: {
     '/api/': {
-      target: serveUrlMap[REACT_APP_ENV]+'10000',
+      target: serveUrlMap[REACT_APP_ENV]+'9800',
       changeOrigin: true,
       pathRewrite: {
         '^/api': '',
       },
     },
     '/sso/': {
-      target: serveUrlMap[REACT_APP_ENV]+'9802',
+      target: serveUrlMap[REACT_APP_ENV]+'9800',
       changeOrigin: true,
       pathRewrite: {
         '^/sso': '/sso',

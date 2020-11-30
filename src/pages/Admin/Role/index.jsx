@@ -135,9 +135,12 @@ export default () => {
         <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}
                     onSubmit={async (fields) => {
                       try {
-                        await addRole({...fields});
-                        message.success('添加成功');
-                        handleModalVisible(false);
+                        const res  = await addRole({...fields});
+                        if(isSuccess(res)){
+                          message.success('添加成功');
+                          actionRef.current.reload();
+                          handleModalVisible(false);
+                        }
                         return true;
                       } catch (error) {
                         message.error('添加失败请重试！');
@@ -185,10 +188,13 @@ export default () => {
             modalVisible={updateModalVisible}
             onSubmit={async (fields) => {
               try {
-                await updateRole(fields);
-                message.success('更新成功');
-                handleUpdateModalVisible(false);
-                setRole({});
+                const res = await updateRole(fields);
+                if(isSuccess(res)){
+                  message.success('更新成功');
+                  actionRef.current.reload();
+                  handleUpdateModalVisible(false);
+                  setRole({});
+                }
                 return true;
               } catch (error) {
                 message.error('更新失败请重试！');

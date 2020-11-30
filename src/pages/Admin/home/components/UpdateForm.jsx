@@ -39,7 +39,7 @@ const UpdateForm = (props) => {
           id:values.id,
           account: values.account,
           name: values.name,
-          adminFlag: values.adminFlag ? "1" : "0",
+          admin: values.admin,
           email: values.email,
         }}
       >
@@ -57,10 +57,10 @@ const UpdateForm = (props) => {
           {min: 1, max: 25, message: '用户名长度请保持在6-20个字符之内'},
         ]}/>
 
-        <FormItem name="adminFlag" label="超级管理员">
+        <FormItem name="admin" label="管理员">
           <RadioGroup>
-            <Radio value="0">否</Radio>
-            <Radio value="1">是</Radio>
+            <Radio value={false}>否</Radio>
+            <Radio value={true}>是</Radio>
           </RadioGroup>
         </FormItem>
         <ProFormText name="email" label="邮箱" placeholder="请输入邮箱" rules={[

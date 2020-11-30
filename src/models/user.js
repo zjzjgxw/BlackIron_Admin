@@ -1,4 +1,7 @@
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { query as queryUsers } from '@/services/user';
+import {currentStaff} from "@/services/login";
+import {isSuccess} from "@/utils/utils";
+
 const UserModel = {
   namespace: 'user',
   state: {
@@ -7,18 +10,23 @@ const UserModel = {
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      if(isSuccess(response)){
+        yield put({
+          type: 'save',
+          payload: response.data.staff,
+        });
+      }
     },
 
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      const response = yield call(currentStaff);
+      if(isSuccess(response)){
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response.data.staff,
+        });
+      }
+
     },
   },
   reducers: {

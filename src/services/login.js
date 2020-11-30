@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function accountLogin(params) {
-  return request('/sso/admins/login', {
+  return request('/sso/staffs/login', {
     method: 'POST',
     data: params,
   });
