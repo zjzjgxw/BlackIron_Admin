@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
-export async function fakeSubmitForm(params) {
-  return request('/api/forms', {
+export async function createProduct(params) {
+  return request('/api/products/detail', {
     method: 'POST',
     data: params,
   });

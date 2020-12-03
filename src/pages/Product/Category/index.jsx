@@ -142,10 +142,13 @@ export default () => {
             modalVisible={updateModalVisible}
             onSubmit={async (fields) => {
               try {
-                await updateCategory(fields.id, fields.name);
-                message.success('更新成功');
-                handleUpdateModalVisible(false);
-                setCategory({});
+                const res =  await updateCategory(fields.id, fields.name);
+                if(isSuccess(res)){
+                  message.success('更新成功');
+                  handleUpdateModalVisible(false);
+                  setCategory({});
+                  actionRef.current.reload();
+                }
                 return true;
               } catch (error) {
                 message.error('更新失败请重试！');

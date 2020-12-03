@@ -88,6 +88,7 @@ export default defineConfig({
                 {
                   name: 'admin-permission',
                   icon: 'smile',
+                  hideInMenu: true,
                   path: '/admin/permission',
                   component: './Admin/Permission',
                 },
@@ -116,6 +117,7 @@ export default defineConfig({
               name: 'article',
               icon: 'ProfileOutlined',
               path: '/article',
+              hideInMenu: true,
               routes: [
                 {
                   name: 'list',

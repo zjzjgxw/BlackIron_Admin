@@ -7,6 +7,7 @@ import {isSuccess} from '@/utils/utils';
 import {queryProductCategoryAttribute} from '@/pages/Product/Category/Attribute/service';
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import {queryProductDetails} from "@/pages/Product/Images/service";
+import {createProduct} from "@/pages/Product/Detail/service";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -33,7 +34,7 @@ const Detail = (props) => {
       setLoading(false);
       const res = info.file.response;
       if (isSuccess(res)) {
-        setImageUrl(res.data.filePath);
+        setImageUrl(res.data.url);
       }
     }
   };
@@ -104,7 +105,7 @@ const Detail = (props) => {
     },
   };
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     const params = {};
     Object.keys(values).forEach((key) => {
       if (key.startsWith('attribute_')) {
@@ -118,8 +119,14 @@ const Detail = (props) => {
         params[key] = values[key];
       }
     });
+    params.coverUrl = params.covers[0].response.data.path;
+    params.mode = 1; //直接售卖
     console.log(params);
-    history.push(`/product/17/images`);
+
+    const res = await createProduct(params);
+    if (isSuccess(res)) {
+      history.push(`/product/${res.data.id}/images`);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -240,17 +247,23 @@ const Detail = (props) => {
 
           <FormItem
             {...formItemLayout}
-            name="coverUrl"
+            name="covers"
             label="封面"
             valuePropName="fileList"
             getValueFromEvent={normFile}
+            rules={[
+              {
+                required: true,
+                message: '请选择图片',
+              },
+            ]}
           >
             <Upload
               name="file"
               listType="picture-card"
               className="avatar-uploader"
               showUploadList={false}
-              action="/api/upload/img"
+              action="/api/files/images/localUpload"
               onChange={(info) => handleChange(info)}
             >
               {imageUrl ? (
@@ -261,7 +274,13 @@ const Detail = (props) => {
             </Upload>
           </FormItem>
 
-          <FormItem {...formItemLayout} label="库存类型" name="stockType">
+          <FormItem {...formItemLayout} label="库存类型" name="stockType"
+                    rules={[
+            {
+              required: true,
+              message: '请选择一个库存类型',
+            },
+          ]}>
             <div>
               <Radio.Group value={stockType} onChange={handleStockTypeChange}>
                 <Radio value="1">拍下减库存</Radio>
@@ -270,7 +289,12 @@ const Detail = (props) => {
             </div>
           </FormItem>
 
-          <FormItem {...formItemLayout} label="状态" name="statusType">
+          <FormItem {...formItemLayout} label="状态" name="statusType" rules={[
+            {
+              required: true,
+              message: '请选择一个商品状态',
+            },
+          ]}>
             <div>
               <Radio.Group value={statusType} onChange={handleStatusTypeChange}  >
                 <Radio value="1">上架</Radio>

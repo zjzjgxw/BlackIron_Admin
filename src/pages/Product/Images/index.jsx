@@ -10,7 +10,7 @@ import {
   PlusOutlined,
   UpCircleFilled,
 } from '@ant-design/icons';
-import {queryProductDetails} from '@/pages/Product/Images/service';
+import {createProductImages, queryProductDetails} from '@/pages/Product/Images/service';
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -56,6 +56,7 @@ const ProductImages = (props) => {
   useEffect(() => {
     queryProductInfo().then((detail) => {
       const fileList = [];
+      console.log(detail);
       detail.mainImages.forEach((item, index) => {
         fileList.push({
           uid: -index,
@@ -64,9 +65,13 @@ const ProductImages = (props) => {
           status: 'done',
           indexNo: item.indexNo,
         });
+        item.imgUrl = item.imgPath;
+
       });
       const detailList = [];
       detail.detailImages.forEach((item) => {
+        item.previewUrl = item.imgUrl;
+        item.imgUrl = item.imgPath;
         detailList.push(item);
       });
       // 排序
@@ -124,7 +129,8 @@ const ProductImages = (props) => {
 
         const preview = await getBase64(info.file.originFileObj);
         detailImageList.push({
-          imgUrl: preview,
+          imgUrl: res.data.path,
+          previewUrl: preview,
           indexNo: detailImageList.length + 1,
         });
         detailImageList.sort(compareImage);
@@ -170,8 +176,20 @@ const ProductImages = (props) => {
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     console.log(requestData);
+    if (requestData.mainImages.length === 0) {
+      message.error("请选择主图");
+      return;
+    }
+    if (requestData.detailImages.length === 0) {
+      message.error("请选择商品详情描述");
+      return;
+    }
+    const res = await createProductImages(requestData);
+    if(isSuccess(res)){
+      message.success("保存成功");
+    }
   };
 
   const removeDetailImage = (item) => {
@@ -230,7 +248,7 @@ const ProductImages = (props) => {
             fileList={mainImageList}
             beforeUpload={beforeUpload}
             onPreview={handlePreview}
-            action="/api/upload/img"
+            action="/api/files/images/localUpload"
             onChange={(info) => handleChange(info)}
           >
             {mainImageList.length >= 4 ? null : uploadButton}
@@ -257,7 +275,7 @@ const ProductImages = (props) => {
             className="avatar-uploader"
             showUploadList={false}
             beforeUpload={beforeUpload}
-            action="/api/upload/img"
+            action="/api/files/images/localUpload"
             onChange={(info) => handleDetailImageChange(info)}
           >
             {detailUploadButton}
@@ -288,7 +306,7 @@ const ProductImages = (props) => {
                     alt="example"
                     key={item.indexNo}
                     style={{width: '100%'}}
-                    src={item.imgUrl}
+                    src={item.previewUrl}
                   />
                 </div>
               );

@@ -132,9 +132,12 @@ export default (props) => {
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
             try {
-              await addAttributes({ name: fields.name, categoryId: match.params.id });
-              message.success('添加成功');
-              handleModalVisible(false);
+              const res = await addAttributes({ name: fields.name, categoryId: match.params.id });
+              if(isSuccess(res)){
+                message.success('添加成功');
+                handleModalVisible(false);
+                actionRef.current.reload();
+              }
               return true;
             } catch (error) {
               message.error('添加失败请重试！');
@@ -166,10 +169,13 @@ export default (props) => {
             modalVisible={updateModalVisible}
             onSubmit={async (fields) => {
               try {
-                await updateAttribute(fields.id, fields.name);
-                message.success('更新成功');
-                handleUpdateModalVisible(false);
-                setAttribute({});
+                const res =  await updateAttribute(fields.id, fields.name);
+                if(isSuccess(res)){
+                  message.success('更新成功');
+                  handleUpdateModalVisible(false);
+                  setAttribute({});
+                  actionRef.current.reload();
+                }
                 return true;
               } catch (error) {
                 message.error('更新失败请重试！');

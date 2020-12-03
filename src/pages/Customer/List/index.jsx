@@ -3,12 +3,11 @@ import React, { useRef } from 'react';
 import styles from './index.less';
 import ProTable from '@ant-design/pro-table';
 import { isSuccess, priceFormat } from '@/utils/utils';
-import Popconfirm from 'antd/es/popconfirm';
-import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
-import { changeCustomerStatus, deleteCustomer, queryCustomer } from '@/pages/Customer/List/service';
+import { changeCustomerStatus, queryCustomer } from '@/pages/Customer/List/service';
 
 const queryCustomerData = async (params) => {
-  const res = await queryCustomer(params);
+  console.log(params);
+  const res = await queryCustomer({...params,pageNum:params.current});
   if (isSuccess(res)) {
     const data = {
       data: res.data.rows,
@@ -27,6 +26,7 @@ export default () => {
     {
       title: 'Id',
       dataIndex: 'id',
+      search:false,
     },
     {
       title: '账号',
@@ -41,6 +41,7 @@ export default () => {
     {
       title: '会员等级',
       dataIndex: 'vip',
+      search:false,
       render: (_, record) => {
         return record.vip.name;
       },
@@ -58,16 +59,17 @@ export default () => {
     {
       title: '关注数',
       dataIndex: 'idolNum',
-      hideInSearch: true,
+      search:false,
     },
     {
       title: '粉丝数',
       dataIndex: 'fansNum',
-      hideInSearch: true,
+      search:false,
     },
     {
       title: '总消费金额',
       dataIndex: 'consumePrice',
+      search:false,
       render: (_, record) => {
         return priceFormat(record.consumePrice);
       },
@@ -76,7 +78,7 @@ export default () => {
       title: '状态',
       dataIndex: 'status',
       filters: true,
-      hideInSearch: true,
+      search:false,
       valueEnum: {
         0: {
           text: '正常',
@@ -104,19 +106,6 @@ export default () => {
         >
           {row.status === 0 ? '禁用' : '启用'}
         </a>,
-        <Popconfirm
-          key={row.id}
-          title="确定删除？"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-          onConfirm={async () => {
-            const res = await deleteCustomer(row.id);
-            if (isSuccess(res)) {
-              action.reload();
-            }
-          }}
-        >
-          <a key={row.id}>删除</a>
-        </Popconfirm>,
       ],
     },
   ];

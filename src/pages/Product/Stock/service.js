@@ -13,3 +13,18 @@ export async function queryStockInfo(productId) {
     params: {productId},
   });
 }
+
+export async function createStockInfo(params) {
+  return request('/api/stock', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+
+export async function updateStockInfo(params) {
+  return request('/api/stock', {
+    method: 'PUT',
+    data: params,
+  });
+}

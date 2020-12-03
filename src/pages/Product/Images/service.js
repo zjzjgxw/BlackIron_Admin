@@ -5,3 +5,10 @@ export async function queryProductDetails(id) {
     method: 'GET',
   });
 }
+
+export async function createProductImages(params) {
+  return request(`/api/products/detail/images/${params.id}`, {
+    method: 'POST',
+    data: params,
+  });
+}

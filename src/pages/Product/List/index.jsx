@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useRef, useState } from 'react';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
-import { isSuccess } from '@/utils/utils';
+import {isSuccess, priceFormat} from '@/utils/utils';
 import { queryProducts } from '@/pages/Product/List/service';
 import styles from './index.less';
 import ProTable from '@ant-design/pro-table';
@@ -59,7 +59,7 @@ export default () => {
           <div>
             <Image
               width={50}
-              src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              src={row.coverUrl}
             />
             <a>{row.name}</a>
           </div>
@@ -73,9 +73,9 @@ export default () => {
       render: (_, row) => {
         return (
           <div>
-            <label>原价:{row.originalPrice}</label>
+            <label>原价:{priceFormat(row.originalPrice) }</label>
             <br />
-            <label>现价:{row.price}</label>
+            <label>现价:{priceFormat(row.price)}</label>
           </div>
         );
       },
@@ -102,7 +102,9 @@ export default () => {
       valueType: 'option',
       dataIndex: 'id',
       render: (text, row, _, action) => [
-        <a key={row.id}>库存管理</a>,
+        <a key={row.id}  onClick={() => {
+          history.push(`/product/${row.id}/stock`);
+        }}>库存管理</a>,
         <a
           key={row.id}
           onClick={() => {

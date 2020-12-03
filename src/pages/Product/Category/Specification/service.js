@@ -1,9 +1,7 @@
 import request from '@/utils/request';
 
-export async function queryProductCategorySpecification(params) {
-  return request('/api/category/specifications', {
-    params,
-  });
+export async function queryProductCategorySpecification(productId) {
+  return request(`/api/category/specifications?productId=${productId}`);
 }
 
 export async function deleteSpecification(id) {
