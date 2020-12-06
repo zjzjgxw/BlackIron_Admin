@@ -9,7 +9,6 @@ import {
   List,
   Menu,
   Modal,
-  Progress,
   Radio,
   Row,
   Form

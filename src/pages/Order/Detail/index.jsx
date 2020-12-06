@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import {connect} from 'umi';
 import styles from './style.less';
+import {priceFormat} from "@/utils/utils";
 
 
 class Detail extends Component {
@@ -89,7 +90,7 @@ class Detail extends Component {
             <Descriptions.Item label="订单号">{detail.code}</Descriptions.Item>
             <Descriptions.Item
               label="状态">{detail && Object.keys(detail).length > 0 ? detail.status.text : '-'}</Descriptions.Item>
-            <Descriptions.Item label="订单金额">￥{detail.price}</Descriptions.Item>
+            <Descriptions.Item label="实付金额">{priceFormat(detail.price) }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{detail.createTime}</Descriptions.Item>
             <Descriptions.Item label="支付时间">{detail.payTime ? detail.payTime : '-'}</Descriptions.Item>
             <Descriptions.Item label="发货时间">{detail.sendTime ? detail.sendTime : '-'}</Descriptions.Item>
@@ -107,7 +108,7 @@ class Detail extends Component {
           >
             <Descriptions.Item label="姓名">{detail.receiver}</Descriptions.Item>
             <Descriptions.Item label="联系电话">{detail.telphone}</Descriptions.Item>
-            <Descriptions.Item label="地址">{detail.address}</Descriptions.Item>
+            <Descriptions.Item label="地址">{detail.province + detail.city+ detail.county+ detail.address}</Descriptions.Item>
             <Descriptions.Item label="备注">无</Descriptions.Item>
           </Descriptions>
           <Divider

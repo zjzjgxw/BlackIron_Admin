@@ -1,12 +1,12 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import {PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
-import { queryCoupons, deleteCoupon, addCoupon, updateCoupon } from './service';
-import { isSuccess } from '@/utils/utils';
+import {queryCoupons, deleteCoupon, addCoupon, updateCoupon} from './service';
+import {isSuccess, priceFormat} from '@/utils/utils';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
 import Popconfirm from 'antd/es/popconfirm';
 
@@ -85,6 +85,9 @@ const TableList = () => {
           },
         ],
       },
+      render: (_, record) => {
+        return priceFormat(record.price);
+      }
     },
     {
       title: '满减金额',
@@ -99,6 +102,9 @@ const TableList = () => {
           },
         ],
       },
+      render: (_, record) => {
+        return priceFormat(record.targetPrice);
+      }
     },
     {
       title: '剩余张数',
@@ -177,11 +183,11 @@ const TableList = () => {
           >
             修改
           </a>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Popconfirm
             key={`delete_confirm_${record.id}`}
             title="确定删除？"
-            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+            icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
             onConfirm={() => handleDelete(record.id)}
           >
             <a key={record.id}>删除</a>
@@ -201,10 +207,10 @@ const TableList = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryCouponData({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => queryCouponData({...params, sorter, filter})}
         columns={columns}
       />
 
@@ -212,10 +218,9 @@ const TableList = () => {
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}
         onSubmit={async (values) => {
-          const res = await addCoupon(values);
+          const res = await addCoupon({...values, price: values.price * 100, targetPrice: values.targetPrice * 100});
           if (isSuccess(res)) {
             handleModalVisible(false);
-
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -226,7 +231,7 @@ const TableList = () => {
       {currentCouponValues && Object.keys(currentCouponValues).length ? (
         <CreateForm
           onSubmit={async (value) => {
-            const res = await updateCoupon(value);
+            const res = await updateCoupon({...value, price: value.price * 100, targetPrice: value.targetPrice * 100});
             if (isSuccess(res)) {
               message.info('修改成功');
               handleUpdateModalVisible(false);

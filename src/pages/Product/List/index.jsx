@@ -2,12 +2,11 @@ import { PageContainer } from '@ant-design/pro-layout';
 import React, { useRef, useState } from 'react';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
 import {isSuccess, priceFormat} from '@/utils/utils';
-import { queryProducts } from '@/pages/Product/List/service';
+import {deleteProduct, queryProducts} from '@/pages/Product/List/service';
 import styles from './index.less';
 import ProTable from '@ant-design/pro-table';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
 import { Button, Image, Popconfirm } from 'antd';
-import { deleteRole } from '@/pages/Admin/Role/service';
 import { queryProductCategory } from '@/pages/Product/Category/service';
 import { history } from 'umi';
 
@@ -118,7 +117,7 @@ export default () => {
           title="确定删除？"
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={async () => {
-            const res = await deleteRole(row.id);
+            const res = await deleteProduct(row.id);
             if (isSuccess(res)) {
               action.reload();
             }

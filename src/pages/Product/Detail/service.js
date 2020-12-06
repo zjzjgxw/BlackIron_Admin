@@ -6,3 +6,11 @@ export async function createProduct(params) {
     data: params,
   });
 }
+
+
+export async function updateProduct(params) {
+  return request('/api/products/detail', {
+    method: 'PUT',
+    data: params,
+  });
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Row, Col, Image, Divider, Tag} from 'antd';
 import styles from '../style.less';
+import {priceFormat} from "@/utils/utils";
 
 
 const OrderItem = (props) => {
@@ -46,7 +47,7 @@ const OrderItem = (props) => {
                 <Divider type="vertical" className={styles.verticalDivider}/>
               </Col>
               <Col span={6}>
-                <p>单价：￥{item.price}</p>
+                <p>单价：{priceFormat(item.price)}</p>
                 <p>数量：<Tag color='red'>{item.num}</Tag></p>
               </Col>
               <Divider type="vertical" className={styles.verticalDivider}/>
@@ -78,13 +79,13 @@ const OrderItem = (props) => {
           <Divider type="vertical" className={styles.verticalDivider}/>
         </Col>
         <Col span={2}>
-          <p>总价：￥{order.price}</p>
-          <p>邮费：￥{order.expressPrice}</p>
+          <p>实付：{priceFormat(order.price)}</p>
+          <p>邮费：{priceFormat(order.expressPrice)}</p>
           <Tag color={tagColor[order.status.text]}>{order.status.text}</Tag>
           <Divider type="vertical" className={styles.verticalDivider}/>
         </Col>
         <Col span={24} style={{backgroundColor: '#fdfce7'}}>
-          <p>备注</p>
+          <p>备注: {order.remark}</p>
         </Col>
       </Row>
     </>

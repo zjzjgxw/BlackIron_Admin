@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Row, Col, Input, Card } from 'antd';
-import { queryProducts } from '@/pages/Product/List/service';
-import { isSuccess } from '@/utils/utils';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import React, {useEffect, useState} from 'react';
+import {Modal, Row, Col, Input, Card} from 'antd';
+import {queryProducts} from '@/pages/Product/List/service';
+import {isSuccess} from '@/utils/utils';
+import {CheckCircleOutlined} from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import style from './style.less';
 
-const { Search } = Input;
-const { Meta } = Card;
+const {Search} = Input;
+const {Meta} = Card;
 
 const SearchModal = (props) => {
-  const { modalVisible, onCancel, onSubmit } = props;
+  const {modalVisible, onCancel, onSubmit} = props;
 
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [hasMore, setHasMore] = useState(true);
 
+  const pageSize = 6;
+
   const onSearch = async (value) => {
-    const res = await queryProducts({ name: value, pageNum: 1 });
+    setHasMore(false);
+    const res = await queryProducts({name: value, pageNum: 1, pageSize});
     if (isSuccess(res)) {
       setProducts(res.data.rows);
       setSearchText(value);
@@ -26,9 +29,12 @@ const SearchModal = (props) => {
   };
 
   const loadMore = async (page) => {
-    const res = await queryProducts({ name: searchText, pageNum: page });
+    if (!hasMore) {
+      return;
+    }
+    const res = await queryProducts({name: searchText, pageNum: page, pageSize});
     if (isSuccess(res)) {
-      if (res.data.rows.length < 6) {
+      if (res.data.rows.length < pageSize) {
         setHasMore(false);
       }
       setProducts(products.concat(res.data.rows));
@@ -47,9 +53,11 @@ const SearchModal = (props) => {
     }
   };
 
+
   useEffect(() => {
     onSearch('');
-  }, []);
+    setSelected([]);
+  }, [modalVisible]);
 
   return (
     <Modal
@@ -66,7 +74,7 @@ const SearchModal = (props) => {
             placeholder="input search text"
             allowClear
             onSearch={onSearch}
-            style={{ width: 200 }}
+            style={{width: 200}}
           />
         </Row>
         <div className={style.scrollDiv}>
@@ -80,28 +88,28 @@ const SearchModal = (props) => {
             <Row gutter={16}>
               {products && products.length > 0
                 ? products.map((item) => {
-                    return (
-                      <Col span={8}>
-                        <Card
-                          key={`product_card_${item.id}`}
-                          hoverable
-                          style={{ width: 240 }}
-                          cover={<img alt="example" src={item.coverUrl} />}
-                          onClick={() => handleCardClicked(item.id)}
-                          actions={[
-                            <CheckCircleOutlined
-                              id={`CheckCircleOutlined_${item.id}`}
-                              style={{ fontSize: '16px' }}
-                              class={style.unSelected}
-                            />,
-                          ]}
-                        >
-                          <Meta title={item.name} description={item.description} />
-                        </Card>
-                        ,
-                      </Col>
-                    );
-                  })
+                  return (
+                    <Col span={8}>
+                      <Card
+                        key={`product_card_${item.id}`}
+                        hoverable
+                        style={{width: 240}}
+                        cover={<img alt="example" src={item.coverUrl}/>}
+                        onClick={() => handleCardClicked(item.id)}
+                        actions={[
+                          <CheckCircleOutlined
+                            id={`CheckCircleOutlined_${item.id}`}
+                            style={{fontSize: '16px'}}
+                            class={style.unSelected}
+                          />,
+                        ]}
+                      >
+                        <Meta title={item.name} description={item.description}/>
+                      </Card>
+                      ,
+                    </Col>
+                  );
+                })
                 : null}
             </Row>
           </InfiniteScroll>

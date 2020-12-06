@@ -5,3 +5,10 @@ export async function queryProducts(params) {
     params,
   });
 }
+
+export async function deleteProduct(id) {
+  return request(`/api/products/detail/${id}`, {
+    method: 'DELETE',
+  })
+}
+

@@ -1,4 +1,4 @@
-import {Button, Card, Input, Form, Radio, Select, Upload} from 'antd';
+import {Button, Card, Input, Form, Radio, Select, Upload, message} from 'antd';
 import {connect, history} from 'umi';
 import React, {useState, useEffect} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
@@ -7,7 +7,7 @@ import {isSuccess} from '@/utils/utils';
 import {queryProductCategoryAttribute} from '@/pages/Product/Category/Attribute/service';
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import {queryProductDetails} from "@/pages/Product/Images/service";
-import {createProduct} from "@/pages/Product/Detail/service";
+import {createProduct, updateProduct} from "@/pages/Product/Detail/service";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -21,8 +21,11 @@ const Detail = (props) => {
   const [attributes, setAttributes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const [productId, setProductId] = useState(null);
+  const [imagePath, setImagePath] = useState(null);
   const [statusType, setStatusType] = useState(null);
   const [stockType, setStockType] = useState(null);
+  const [mode, setMode] = useState(null);
 
   const handleChange = (info) => {
     if (info.file.status === 'uploading') {
@@ -35,6 +38,7 @@ const Detail = (props) => {
       const res = info.file.response;
       if (isSuccess(res)) {
         setImageUrl(res.data.url);
+        setImagePath(res.data.path);
       }
     }
   };
@@ -68,7 +72,6 @@ const Detail = (props) => {
     }
     return {};
   };
-
 
 
   const formItemLayout = {
@@ -119,13 +122,21 @@ const Detail = (props) => {
         params[key] = values[key];
       }
     });
-    params.coverUrl = params.covers[0].response.data.path;
-    params.mode = 1; //直接售卖
-    console.log(params);
-
-    const res = await createProduct(params);
-    if (isSuccess(res)) {
-      history.push(`/product/${res.data.id}/images`);
+    if (imagePath === null) {
+      return;
+    }
+    params.coverUrl = imagePath;
+    if (productId) {
+      params.id = productId;
+      const res = await updateProduct(params);
+      if (isSuccess(res)) {
+        message.success("保存成功");
+      }
+    } else {
+      const res = await createProduct(params);
+      if (isSuccess(res)) {
+        history.push(`/product/${res.data.id}/images`);
+      }
     }
   };
 
@@ -146,28 +157,46 @@ const Detail = (props) => {
   };
 
   const handleStatusTypeChange = (e) => {
-    form.setFieldsValue({ statusType: e.target.value });
+    form.setFieldsValue({statusType: e.target.value});
     setStatusType(e.target.value);
-    return  e.target.value;
+    return e.target.value;
   };
 
   const handleStockTypeChange = (e) => {
-    form.setFieldsValue({ stockType: e.target.value });
+    form.setFieldsValue({stockType: e.target.value});
     setStockType(e.target.value);
-    return  e.target.value;
+    return e.target.value;
+  };
+
+  const handleModeTypeChange = (e) => {
+    form.setFieldsValue({mode: e.target.value});
+    setMode(e.target.value);
+    return e.target.value;
   };
 
   useEffect(() => {
     queryCategory().then((data) => setCategories(data)); // 获取类目属性数据
-    if(match.params.id){
+    if (match.params.id) {
+      setProductId(match.params.id);
       queryProductInfo().then((data) => {
         form.setFieldsValue({...data});
         setImageUrl(data.coverUrl);
+        setImagePath(data.coverPath);
+        const initFile = [
+          {
+            uid: '-1',
+            name: data.coverUrl,
+            status: 'done',
+            url: data.coverUrl,
+          },
+        ];
+        form.setFieldsValue({covers: initFile});
         setStatusType(data.statusType);
         setStockType(data.stockType);
-        handleCategoryChange(data.categoryId).then(()=>{
-          data.attributes.forEach(item=>{
-            form.setFieldsValue({ [`attribute_${item.name}`]: item.content});
+        setMode(data.mode);
+        handleCategoryChange(data.categoryId).then(() => {
+          data.attributes.forEach(item => {
+            form.setFieldsValue({[`attribute_${item.name}`]: item.content});
           })
         });
       })
@@ -198,7 +227,7 @@ const Detail = (props) => {
               },
             ]}
           >
-            <Select onChange={handleCategoryChange}  >
+            <Select onChange={handleCategoryChange} disabled={!!productId}>
               {categories.map((item) => {
                 return (
                   <Select.Option key={item.id} value={item.id}>
@@ -274,17 +303,32 @@ const Detail = (props) => {
             </Upload>
           </FormItem>
 
+          <FormItem {...formItemLayout} label="售卖模式" name="mode"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择一个售卖模式',
+                      },
+                    ]}>
+            <div>
+              <Radio.Group value={mode} onChange={handleModeTypeChange}>
+                <Radio value={1}>正常售卖</Radio>
+                <Radio value={2}>预售</Radio>
+              </Radio.Group>
+            </div>
+          </FormItem>
+
           <FormItem {...formItemLayout} label="库存类型" name="stockType"
                     rules={[
-            {
-              required: true,
-              message: '请选择一个库存类型',
-            },
-          ]}>
+                      {
+                        required: true,
+                        message: '请选择一个库存类型',
+                      },
+                    ]}>
             <div>
               <Radio.Group value={stockType} onChange={handleStockTypeChange}>
-                <Radio value="1">拍下减库存</Radio>
-                <Radio value="2">付款减库存</Radio>
+                <Radio value={1}>拍下减库存</Radio>
+                <Radio value={2}>付款减库存</Radio>
               </Radio.Group>
             </div>
           </FormItem>
@@ -296,9 +340,9 @@ const Detail = (props) => {
             },
           ]}>
             <div>
-              <Radio.Group value={statusType} onChange={handleStatusTypeChange}  >
-                <Radio value="1">上架</Radio>
-                <Radio value="2">下架</Radio>
+              <Radio.Group value={statusType} onChange={handleStatusTypeChange}>
+                <Radio value={1}>上架</Radio>
+                <Radio value={2}>下架</Radio>
               </Radio.Group>
             </div>
           </FormItem>
@@ -341,9 +385,18 @@ const Detail = (props) => {
               marginTop: 32,
             }}
           >
-            <Button type="primary" htmlType="submit">
+            {productId ?
+              <div>
+              <Button type="primary" htmlType="submit">
+              保存
+            </Button> <Button type="primary" onClick={()=>{
+                history.push(`/product/${productId}/images`)
+              }}>
+              编辑图片信息
+              </Button> </div>: <Button type="primary" htmlType="submit">
               创建并完善描述
-            </Button>
+            </Button>}
+
           </FormItem>
         </Form>
       </Card>
