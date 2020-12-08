@@ -1,9 +1,9 @@
-import { PageContainer } from '@ant-design/pro-layout';
-import React, { useState, useRef } from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import React, {useState, useRef} from 'react';
 import styles from './index.less';
 import ProTable from '@ant-design/pro-table';
-import { isSuccess } from '@/utils/utils';
-import { history } from 'umi';
+import {isSuccess} from '@/utils/utils';
+import {history} from 'umi';
 import Popconfirm from 'antd/es/popconfirm';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
 import {
@@ -13,7 +13,7 @@ import {
   updateCategory,
 } from '@/pages/Product/Category/service';
 import UpdateCategoryForm from '@/pages/Product/Category/components/UpdateCategoryForm';
-import { Button, message } from 'antd';
+import {Button, message} from 'antd';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
 import CreateForm from '@/pages/Product/Category/components/CreateForm';
 
@@ -40,12 +40,19 @@ export default () => {
     {
       title: 'Id',
       dataIndex: 'id',
-      hideInSearch: true,
+      search: false,
     },
     {
       title: '类目名',
       dataIndex: 'name',
-      hideInSearch: true,
+      search: false,
+    }, {
+      title: '首页展示',
+      dataIndex: 'showFlag',
+      search: false,
+      render: (_, record) => {
+        return  record.showFlag === 0 ? '否' : '是';
+      }
     },
     {
       title: '操作',
@@ -80,7 +87,7 @@ export default () => {
         <Popconfirm
           key={row.id}
           title="确定删除？"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
           onConfirm={async () => {
             const res = await deleteCategory(row.id);
             if (isSuccess(res)) {
@@ -105,11 +112,11 @@ export default () => {
           size="small"
           columns={columns}
           actionRef={actionRef}
-          request={(params, sorter, filter) => queryCategory({ ...params, sorter, filter })}
+          request={(params, sorter, filter) => queryCategory({...params, sorter, filter})}
           rowKey="id"
           toolBarRender={() => [
             <Button key="addCategoryButton" type="primary" onClick={() => handleModalVisible(true)}>
-              <PlusOutlined />
+              <PlusOutlined/>
               新建
             </Button>,
           ]}
@@ -119,8 +126,15 @@ export default () => {
           onCancel={() => handleModalVisible(false)}
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
+            let params = {};
+            if (fields.hasOwnProperty("images")) {
+              params = {...fields, imgUrl: fields.images[0].response.data.path};
+            } else {
+              params = {...fields}
+            }
             try {
-              await addCategory(fields.name);
+              await addCategory(params);
+              actionRef.current.reload();
               message.success('添加成功');
               handleModalVisible(false);
               return true;
@@ -141,9 +155,16 @@ export default () => {
             values={category}
             modalVisible={updateModalVisible}
             onSubmit={async (fields) => {
+              console.log(fields);
+              let params = {};
+              if (fields.hasOwnProperty("images")) {
+                params = {...fields, imgUrl: fields.images[0].response.data.path};
+              } else {
+                params = {...fields}
+              }
               try {
-                const res =  await updateCategory(fields.id, fields.name);
-                if(isSuccess(res)){
+                const res = await updateCategory(fields.id, params);
+                if (isSuccess(res)) {
                   message.success('更新成功');
                   handleUpdateModalVisible(false);
                   setCategory({});

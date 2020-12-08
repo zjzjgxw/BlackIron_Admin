@@ -1,7 +1,11 @@
 import request from '@/utils/request';
 
-export async function queryProductCategorySpecification(productId) {
+export async function queryProductCategorySpecificationOfProduct(productId = null) {
   return request(`/api/category/specifications?productId=${productId}`);
+}
+
+export async function queryProductCategorySpecification(categoryId) {
+  return request(`/api/category/specifications?categoryId=${categoryId}`);
 }
 
 export async function deleteSpecification(id) {
@@ -13,21 +17,21 @@ export async function deleteSpecification(id) {
 export async function updateSpecification(id, name) {
   return request(`/api/category/specifications/${id}`, {
     method: 'PUT',
-    data: { name },
+    data: {name},
   });
 }
 
 export async function addSpecification(params) {
   return request(`/api/category/specifications`, {
     method: 'POST',
-    data: { ...params },
+    data: {...params},
   });
 }
 
 export async function addSpecificationOption(params) {
   return request(`/api/category/specifications/options`, {
     method: 'POST',
-    data: { ...params },
+    data: {...params},
   });
 }
 

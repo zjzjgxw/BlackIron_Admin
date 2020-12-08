@@ -48,6 +48,18 @@ export default defineConfig({
               redirect: '/welcome',
             },
             {
+              name: 'store',
+              icon: 'smile',
+              routes: [
+                {
+                  name: 'banner',
+                  icon: 'smile',
+                  path: '/store/banners',
+                  component: './Store/Banner',
+                },
+              ],
+            },
+            {
               path: '/welcome',
               name: 'welcome',
               icon: 'smile',

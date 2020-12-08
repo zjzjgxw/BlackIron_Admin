@@ -3,7 +3,9 @@ import {connect, history} from 'umi';
 import React, {useEffect, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import {isSuccess} from '@/utils/utils';
-import {queryProductCategorySpecification} from '@/pages/Product/Category/Specification/service';
+import {
+  queryProductCategorySpecificationOfProduct
+} from '@/pages/Product/Category/Specification/service';
 import {createStockInfo, queryStockInfo, updateStockInfo} from '@/pages/Product/Stock/service';
 import SpecificationTable from '@/pages/Product/Stock/components/SpecificationTable';
 
@@ -34,7 +36,7 @@ const Stock = (props) => {
   };
 
   const querySpecifications = async (productId) => {
-    const res = await queryProductCategorySpecification(productId);
+    const res = await queryProductCategorySpecificationOfProduct(productId);
     if (isSuccess(res)) {
       return res.data.list;
     }

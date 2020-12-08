@@ -72,4 +72,6 @@ export default {
   'menu.sales': '促销活动',
   'menu.sales.discount': '限时折扣',
   'menu.sales.coupon': '优惠券',
+  'menu.store':'店铺管理',
+  'menu.store.banner':'首页轮播图'
 };

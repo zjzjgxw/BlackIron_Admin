@@ -8,7 +8,7 @@ import {queryProductCategoryAttribute} from '@/pages/Product/Category/Attribute/
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import {queryProductDetails} from "@/pages/Product/Images/service";
 import {createProduct, updateProduct} from "@/pages/Product/Detail/service";
-
+import ReactPlayer from 'react-player';
 const FormItem = Form.Item;
 const {Option} = Select;
 const {TextArea} = Input;
@@ -20,6 +20,9 @@ const Detail = (props) => {
   const [categories, setCategories] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoPath, setVideoPath] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [productId, setProductId] = useState(null);
   const [imagePath, setImagePath] = useState(null);
@@ -43,6 +46,33 @@ const Detail = (props) => {
     }
   };
 
+  const handleVideoChange = (info) => {
+    if (info.file.status === 'uploading') {
+      setVideoLoading(true);
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      setVideoLoading(false);
+      const res = info.file.response;
+      if (isSuccess(res)) {
+        setVideoUrl(res.data.url);
+        setVideoPath(res.data.path);
+      }
+    }
+  };
+
+  const beforeVideoUpload = (file) =>{
+    const isMp4 = file.type === 'video/mp4';
+    if (!isMp4) {
+      message.error('请上传mp4格式文件');
+    }
+    const isLt20M = file.size / 1024 / 1024 < 20;
+    if (!isLt20M) {
+      message.error('视频必须小于20MB!');
+    }
+    return isMp4 && isLt20M;
+  };
   const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -53,6 +83,13 @@ const Detail = (props) => {
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined/> : <PlusOutlined/>}
+      <div style={{marginTop: 8}}>上传</div>
+    </div>
+  );
+
+  const uploadVideoButton = (
+    <div>
+      {videoLoading ? <LoadingOutlined/> : <PlusOutlined/>}
       <div style={{marginTop: 8}}>上传</div>
     </div>
   );
@@ -126,6 +163,9 @@ const Detail = (props) => {
       return;
     }
     params.coverUrl = imagePath;
+    if(videoPath !== null){
+      params.videoUrl = videoPath;
+    }
     if (productId) {
       params.id = productId;
       const res = await updateProduct(params);
@@ -148,7 +188,6 @@ const Detail = (props) => {
   // 商品类目改变时
   const handleCategoryChange = async (categoryId) => {
     const res = await queryProductCategoryAttribute(categoryId);
-    console.log(res);
     if (isSuccess(res)) {
       setAttributes(res.data.attributes);
       return res.data.attributes;
@@ -182,6 +221,8 @@ const Detail = (props) => {
         form.setFieldsValue({...data});
         setImageUrl(data.coverUrl);
         setImagePath(data.coverPath);
+        setVideoUrl(data.videoUrl);
+        setVideoPath(data.videoPath);
         const initFile = [
           {
             uid: '-1',
@@ -301,6 +342,32 @@ const Detail = (props) => {
                 uploadButton
               )}
             </Upload>
+          </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            name="videos"
+            label="视频"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
+            <Upload
+              name="file"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="/api/files/media/localUpload"
+              beforeUpload={beforeVideoUpload}
+              onChange={(info) => handleVideoChange(info)}
+            >
+              {uploadVideoButton}
+
+            </Upload>
+            {videoUrl ? (
+              <ReactPlayer url={videoUrl}  controls={true} width={300} height={300}/>
+            ) : (
+              null
+            )}
           </FormItem>
 
           <FormItem {...formItemLayout} label="售卖模式" name="mode"
