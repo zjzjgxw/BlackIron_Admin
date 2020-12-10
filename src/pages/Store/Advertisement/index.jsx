@@ -1,28 +1,31 @@
-import {PageContainer} from '@ant-design/pro-layout';
-import React, {useState, useEffect, useRef} from 'react';
-import {Button, Image, message, Popconfirm, Spin} from 'antd';
+import { PageContainer } from '@ant-design/pro-layout';
+import React, {useState, useRef} from 'react';
+import {Button, Image, message, Popconfirm} from 'antd';
 import styles from './index.less';
-import {PlusOutlined} from "@ant-design/icons";
-import ProTable from "@ant-design/pro-table";
 import {isSuccess} from "@/utils/utils";
-import {createBanner, deleteBanner, queryBanners, updateBanner} from "@/pages/Store/Banner/service";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
-import CreateForm from "@/pages/Store/Banner/components/CreateForm";
-import UpdateForm from "@/pages/Store/Banner/components/UpdateForm";
-
+import ProTable from "@ant-design/pro-table";
+import {PlusOutlined} from "@ant-design/icons";
+import {
+  createAdvertisement,
+  deleteAdvertisement,
+  queryAdvertisements,
+  updateAdvertisement
+} from "@/pages/Store/Advertisement/service";
+import CreateForm from "@/pages/Store/Advertisement/components/CreateForm";
+import UpdateForm from "@/pages/Store/Advertisement/components/UpdateForm";
 export default () => {
   const actionRef = useRef();
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [banner, setBanner] = useState({});
+  const [advertisement, setAdvertisement] = useState({});
 
-
-  const queryBannersData = async (params) => {
-    const res = await queryBanners(params);
+  const queryAdvertisementsData = async (params) => {
+    const res = await queryAdvertisements(params);
     if (isSuccess(res)) {
       return {
-        data: res.data.banners,
-        total: res.data.banners.length,
+        data: res.data.advertisements,
+        total: res.data.advertisements.length,
         success: true,
       };
     }
@@ -76,7 +79,7 @@ export default () => {
           key={row.id}
           onClick={() => {
             handleUpdateModalVisible(true);
-            setBanner(row);
+            setAdvertisement(row);
           }}
         >
           编辑
@@ -86,7 +89,7 @@ export default () => {
           title="确定删除？"
           icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
           onConfirm={async () => {
-            const res = await deleteBanner(row.id);
+            const res = await deleteAdvertisement(row.id);
             if (isSuccess(res)) {
               action.reload();
             }
@@ -99,7 +102,7 @@ export default () => {
   ];
 
   return (
-    <PageContainer className={styles.main}>
+    <PageContainer  className={styles.main}>
       <div
         style={{
           paddingTop: 100,
@@ -107,7 +110,7 @@ export default () => {
         }}
       >
         <ProTable
-          headerTitle="Banner 列表"
+          headerTitle="广告图 列表"
           actionRef={actionRef}
           rowKey="key"
           search={{
@@ -118,7 +121,7 @@ export default () => {
               <PlusOutlined/> 新建
             </Button>,
           ]}
-          request={(params, sorter, filter) => queryBannersData({...params, sorter, filter})}
+          request={(params, sorter, filter) => queryAdvertisementsData({...params, sorter, filter})}
           columns={columns}
         />
 
@@ -126,7 +129,7 @@ export default () => {
           onCancel={() => handleModalVisible(false)}
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
-            const res = await createBanner(fields);
+            const res = await createAdvertisement(fields);
             if (isSuccess(res)) {
               handleModalVisible(false);
               if (actionRef.current) {
@@ -137,21 +140,21 @@ export default () => {
         />
 
 
-        {banner && Object.keys(banner).length ? (
+        {advertisement && Object.keys(advertisement).length ? (
           <UpdateForm
             onCancel={() => {
               handleUpdateModalVisible(false);
-              setBanner({});
+              setAdvertisement({});
             }}
             modalVisible={updateModalVisible}
-            values={banner}
+            values={advertisement}
             onSubmit={async (fields) => {
               try {
-                const res = await updateBanner(fields);
+                const res = await updateAdvertisement(fields);
                 if (isSuccess(res)) {
                   actionRef.current.reload();
                   message.success('修改成功');
-                  setBanner({});
+                  setAdvertisement({});
                   handleUpdateModalVisible(false);
                 }
                 return true;

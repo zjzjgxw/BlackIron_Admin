@@ -50,12 +50,19 @@ export default defineConfig({
             {
               name: 'store',
               icon: 'smile',
+              path: '/store',
               routes: [
                 {
                   name: 'banner',
                   icon: 'smile',
                   path: '/store/banners',
                   component: './Store/Banner',
+                },
+                {
+                  name: 'advertisement',
+                  icon: 'smile',
+                  path: '/store/advertisements',
+                  component: './Store/Advertisement',
                 },
               ],
             },

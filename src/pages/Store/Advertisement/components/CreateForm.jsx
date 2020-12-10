@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, InputNumber, Modal, Radio, Select, Upload} from 'antd';
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
-import ProForm, {ProFormText, ProFormRadio, ProFormDigit} from '@ant-design/pro-form';
+import ProForm, {ProFormText} from '@ant-design/pro-form';
 import FormItem from "antd/es/form/FormItem";
 import {isSuccess} from "@/utils/utils";
 import {queryProductCategory} from "@/pages/Product/Category/service";
@@ -110,7 +110,7 @@ const CreateForm = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="创建Banner"
+      title="新建广告图"
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}

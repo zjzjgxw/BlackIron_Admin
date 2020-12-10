@@ -1,16 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, InputNumber, Modal, Radio, Select, Upload} from 'antd';
-import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
-import ProForm, {ProFormText, ProFormRadio, ProFormDigit} from '@ant-design/pro-form';
-import FormItem from "antd/es/form/FormItem";
-import {isSuccess} from "@/utils/utils";
-import {queryProductCategory} from "@/pages/Product/Category/service";
+import ProForm, {ProFormText} from '@ant-design/pro-form';
 import SearchModal from "@/pages/Product/Search/SearchModal";
+import {isSuccess} from "@/utils/utils";
+import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
+import {queryProductCategory} from "@/pages/Product/Category/service";
 
+const FormItem = Form.Item;
+const formLayout = {
+  labelCol: {
+    span: 7,
+  },
+  wrapperCol: {
+    span: 13,
+  },
+};
 
-const CreateForm = (props) => {
-  const {modalVisible, onCancel, onSubmit} = props;
+const UpdateForm = (props) => {
   const [form] = Form.useForm();
+  const {
+    onSubmit,
+    onCancel,
+    modalVisible,
+    values,
+  } = props;
+
 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -27,7 +41,7 @@ const CreateForm = (props) => {
     if (info.file.status === 'done') {
       setLoading(false);
       const res = info.file.response;
-      if(isSuccess(res)){
+      if (isSuccess(res)) {
         setImageUrl(res.data.url);
         setImagePath(res.data.path);
       }
@@ -48,8 +62,8 @@ const CreateForm = (props) => {
     </div>
   );
 
-  const handleCategoryChange =  (categoryId) => {
-    form.setFieldsValue({url:`/pages/category/index?id=${categoryId}`});
+  const handleCategoryChange = (categoryId) => {
+    form.setFieldsValue({url: `/pages/category/index?id=${categoryId}`});
     return categoryId;
   };
 
@@ -78,7 +92,7 @@ const CreateForm = (props) => {
     >
       <Button
         htmlType="button"
-        style={{ margin: '8px 0px' }}
+        style={{margin: '8px 0px'}}
         onClick={() => {
           setProductsModalVisible(true);
         }}
@@ -101,28 +115,37 @@ const CreateForm = (props) => {
     return [];
   };
 
-  useEffect(()=>{
-    queryCategory().then(data=>{
+  useEffect(() => {
+    queryCategory().then(data => {
       setCategories(data);
     });
-  },[]);
+    setImageUrl(values.imgUrl);
+    setImagePath(values.imgPath);
+    form.setFieldsValue({id: values.id, url: values.url, indexNo: values.indexNo})
+  }, []);
 
   return (
     <Modal
       destroyOnClose
-      title="创建Banner"
+      title="广告图编辑"
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}
     >
-      <ProForm  form={form}
-                onFinish={(values) => onSubmit({...values,imgUrl:imagePath})}>
+      <ProForm
+        {...formLayout}
+        form={form}
+        onFinish={(fields) => onSubmit({...fields, imgUrl: imagePath})}
+      >
+
+        <FormItem hidden name="id" label="id">
+          <input/>
+        </FormItem>
         <FormItem
           name="images"
           label="头像"
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          rules={[{ required: true, message: '请选择图片' }]}
         >
           <Upload
             name="file"
@@ -130,7 +153,7 @@ const CreateForm = (props) => {
             className="avatar-uploader"
             showUploadList={false}
             action="/api/files/images/localUpload"
-            onChange={(info)=>handleChange(info)}
+            onChange={(info) => handleChange(info)}
           >
             {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
           </Upload>
@@ -172,19 +195,17 @@ const CreateForm = (props) => {
           onCancel={() => {
             setProductsModalVisible(false);
           }}
-          onSubmit={(values) => {
+          onSubmit={(ids) => {
             setProductsModalVisible(false);
-            if(values.length > 0){
-              form.setFieldsValue({url:`/pages/product/detail?id=${values[0]}`});
+            if (ids.length > 0) {
+              form.setFieldsValue({url: `/pages/product/detail?id=${ids[0]}`});
             }
           }}
         />
 
       </ProForm>
-
-
     </Modal>
   );
 };
 
-export default CreateForm;
+export default UpdateForm;
