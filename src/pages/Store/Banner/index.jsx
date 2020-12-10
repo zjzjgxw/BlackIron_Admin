@@ -5,15 +5,17 @@ import styles from './index.less';
 import {PlusOutlined} from "@ant-design/icons";
 import ProTable from "@ant-design/pro-table";
 import {isSuccess} from "@/utils/utils";
-import {queryBanners} from "@/pages/Store/Banner/service";
-import {history} from "umi";
+import {createBanner, deleteBanner, queryBanners, updateBanner} from "@/pages/Store/Banner/service";
 import QuestionCircleOutlined from "@ant-design/icons/lib/icons/QuestionCircleOutlined";
 import {deleteProduct} from "@/pages/Product/List/service";
 import CreateForm from "@/pages/Store/Banner/components/CreateForm";
+import UpdateForm from "@/pages/Store/Banner/components/UpdateForm";
 
 export default () => {
   const actionRef = useRef();
   const [createModalVisible, handleModalVisible] = useState(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState(false);
+  const [banner, setBanner] = useState({});
 
 
   const queryBannersData = async (params) => {
@@ -74,7 +76,8 @@ export default () => {
         <a
           key={row.id}
           onClick={() => {
-            history.push(`/product/detail/${row.id}`);
+            handleUpdateModalVisible(true);
+            setBanner(row);
           }}
         >
           编辑
@@ -84,7 +87,7 @@ export default () => {
           title="确定删除？"
           icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
           onConfirm={async () => {
-            const res = await deleteProduct(row.id);
+            const res = await deleteBanner(row.id);
             if (isSuccess(res)) {
               action.reload();
             }
@@ -124,9 +127,43 @@ export default () => {
           onCancel={() => handleModalVisible(false)}
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
-            console.log(fields);
+            const params = {...fields, imgUrl: fields.images[0].response.data.path};
+            const res = await createBanner(params);
+            if (isSuccess(res)) {
+              handleModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
           }}
         />
+
+
+        {banner && Object.keys(banner).length ? (
+          <UpdateForm
+            onCancel={() => {
+              handleUpdateModalVisible(false);
+              setBanner({});
+            }}
+            modalVisible={updateModalVisible}
+            values={banner}
+            onSubmit={async (fields) => {
+              try {
+                const res = await updateBanner(fields);
+                if (isSuccess(res)) {
+                  actionRef.current.reload();
+                  message.success('修改成功');
+                  setBanner({});
+                  handleUpdateModalVisible(false);
+                }
+                return true;
+              } catch (error) {
+                message.error('修改失败请重试！');
+                return false;
+              }
+            }}
+          />
+        ) : null}
       </div>
     </PageContainer>
   );

@@ -24,7 +24,6 @@ const CreateForm = (props) => {
       if(isSuccess(res)){
         setImageUrl(res.data.url);
       }
-
     }
   };
 

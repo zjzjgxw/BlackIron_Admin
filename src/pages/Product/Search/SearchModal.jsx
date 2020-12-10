@@ -10,7 +10,7 @@ const {Search} = Input;
 const {Meta} = Card;
 
 const SearchModal = (props) => {
-  const {modalVisible, onCancel, onSubmit} = props;
+  const {modalVisible, onCancel, onSubmit, mode = "multi"} = props;
 
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -48,8 +48,17 @@ const SearchModal = (props) => {
       const tmp = selected.filter((item) => item !== id);
       setSelected(tmp);
     } else {
-      obj.style.color = '#52c41a';
-      selected.push(id);
+      if (mode === 'single') {
+        selected.forEach(item => {
+          const element = document.getElementById(`CheckCircleOutlined_${item}`);
+          element.style.color = '';
+        });
+        obj.style.color = '#52c41a';
+        setSelected([id]);
+      }else{
+        obj.style.color = '#52c41a';
+        selected.push(id);
+      }
     }
   };
 
@@ -112,6 +121,7 @@ const SearchModal = (props) => {
                 })
                 : null}
             </Row>
+            {!hasMore ? (<div>没有更多了...</div>) : null}
           </InfiniteScroll>
         </div>
       </>

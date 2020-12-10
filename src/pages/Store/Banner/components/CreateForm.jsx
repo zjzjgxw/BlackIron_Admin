@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Button, InputNumber, Modal, Radio, Select, Upload} from 'antd';
+import {Button, Form, InputNumber, Modal, Radio, Select, Upload} from 'antd';
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
-import ProForm, {ProFormText, ProFormRadio} from '@ant-design/pro-form';
+import ProForm, {ProFormText, ProFormRadio, ProFormDigit} from '@ant-design/pro-form';
 import FormItem from "antd/es/form/FormItem";
 import {isSuccess} from "@/utils/utils";
 import {queryProductCategory} from "@/pages/Product/Category/service";
@@ -10,6 +10,7 @@ import SearchModal from "@/pages/Product/Search/SearchModal";
 
 const CreateForm = (props) => {
   const {modalVisible, onCancel, onSubmit} = props;
+  const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -45,9 +46,9 @@ const CreateForm = (props) => {
     </div>
   );
 
-  const handleCategoryChange = async (categoryId) => {
-    console.log(categoryId);
-    return null;
+  const handleCategoryChange =  (categoryId) => {
+    form.setFieldsValue({url:`/pages/category/index?id=${categoryId}`});
+    return categoryId;
   };
 
   const categorySelected = (
@@ -112,12 +113,14 @@ const CreateForm = (props) => {
       onCancel={() => onCancel()}
       footer={null}
     >
-      <ProForm onFinish={(values) => onSubmit(values)}>
+      <ProForm  form={form}
+                onFinish={(values) => onSubmit(values)}>
         <FormItem
           name="images"
           label="头像"
           valuePropName="fileList"
           getValueFromEvent={normFile}
+          rules={[{ required: true, message: '请选择图片' }]}
         >
           <Upload
             name="file"
@@ -155,15 +158,23 @@ const CreateForm = (props) => {
 
         {jumpType === 0 ? categorySelected : productsButton}
 
+        <ProFormText
+          name="url"
+          label="跳转路径"
+        />
+
         <SearchModal
           key="searchModel"
+          mode="single"
           modalVisible={productsModalVisible}
           onCancel={() => {
             setProductsModalVisible(false);
           }}
           onSubmit={(values) => {
             setProductsModalVisible(false);
-            console.log(values);
+            if(values.length > 0){
+              form.setFieldsValue({url:`/pages/product/detail?id=${values[0]}`});
+            }
           }}
         />
 
