@@ -13,7 +13,7 @@ import {
   updateCategory,
 } from '@/pages/Product/Category/service';
 import UpdateCategoryForm from '@/pages/Product/Category/components/UpdateCategoryForm';
-import {Button, message} from 'antd';
+import {Button, Image, message} from 'antd';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
 import CreateForm from '@/pages/Product/Category/components/CreateForm';
 
@@ -46,7 +46,23 @@ export default () => {
       title: '类目名',
       dataIndex: 'name',
       search: false,
-    }, {
+    },
+    {
+      title: '图片',
+      dataIndex: 'imgUrl',
+      render: (_, row) => {
+        return (
+          <div>
+            <Image
+              width={360}
+              height={150}
+              src={row.imgUrl}
+            />
+          </div>
+        );
+      },
+    },
+    {
       title: '首页展示',
       dataIndex: 'showFlag',
       search: false,

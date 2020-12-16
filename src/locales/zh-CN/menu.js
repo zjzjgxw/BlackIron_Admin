@@ -74,5 +74,6 @@ export default {
   'menu.sales.coupon': '优惠券',
   'menu.store':'店铺管理',
   'menu.store.banner':'首页轮播图',
-  'menu.store.advertisement':'首页广告图'
+  'menu.store.advertisement':'首页广告图',
+  'menu.store.detail':'商户信息'
 };

@@ -64,6 +64,12 @@ export default defineConfig({
                   path: '/store/advertisements',
                   component: './Store/Advertisement',
                 },
+                {
+                  name: 'detail',
+                  icon: 'smile',
+                  path: '/store/detail',
+                  component: './Store/Detail',
+                },
               ],
             },
             {
