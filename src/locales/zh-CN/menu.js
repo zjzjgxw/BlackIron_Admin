@@ -75,5 +75,6 @@ export default {
   'menu.store':'店铺管理',
   'menu.store.banner':'首页轮播图',
   'menu.store.advertisement':'首页广告图',
-  'menu.store.detail':'商户信息'
+  'menu.store.detail':'商户信息',
+  'menu.store.navigation':'首页导航项'
 };
