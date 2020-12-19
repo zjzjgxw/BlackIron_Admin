@@ -40,12 +40,22 @@ export async function updateFakeList(params) {
 export async function queryOrders(params) {
   return request('/api/orders', {
     method: 'GET',
-    params,
+    params:{
+      ...params
+    }
   });
 }
 
 export async function queryExpress() {
   return request('/api/expresses', {
     method: 'GET',
+  });
+}
+
+
+export async function sendOrder(params) {
+  return request('/api/orders/send', {
+    method: 'POST',
+    data: { ...params},
   });
 }

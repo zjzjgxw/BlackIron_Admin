@@ -17,11 +17,11 @@ const ExpressModal = (props) => {
       footer={null}
     >
       <ProForm onFinish={(field) => onSubmit(field)} initialValues={{
-        id: info.orderId,
+        orderId: info.orderId,
         expressCode: info.expressCode,
         expressId: info.expressId !== 0 ? info.expressId : null
       }}>
-        <FormItem hidden name="id" label="订单id">
+        <FormItem hidden name="orderId" label="订单id">
           <Input/>
         </FormItem>
 

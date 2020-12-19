@@ -126,12 +126,6 @@ export default defineConfig({
               ],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
-            {
               name: 'customer',
               icon: 'UserOutlined',
               path: '/customer',

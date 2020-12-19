@@ -11,7 +11,8 @@ import {
   Modal,
   Radio,
   Row,
-  Form
+  Form,
+  message
 } from 'antd';
 import {findDOMNode} from 'react-dom';
 import {PageContainer} from '@ant-design/pro-layout';
@@ -20,6 +21,8 @@ import OperationModal from './components/OperationModal';
 import styles from './style.less';
 import OrderItem from "@/pages/Order/Index/components/OrderItem";
 import ExpressModal from "@/pages/Order/Index/components/ExpressModal";
+import {sendOrder} from "@/pages/Order/Index/service";
+import {isSuccess} from "@/utils/utils";
 
 
 const Info = ({title, value, bordered}) => (
@@ -45,15 +48,17 @@ export const Index = (props) => {
   const [current, setCurrent] = useState(undefined);
   const [expressModalVisible, setExpressModalVisible] = useState(false);
   const [expressInfo, setExpressInfo] = useState({});
+  const [searchParams,setSearchParams] = useState(null);
 
   useEffect(() => {
     dispatch({
       type: 'orderAndIndex/fetch',
       payload: {
-        count: 5,
+        pageNum: 0,
+        pageSize: 10,
       },
     });
-    //获取快递信息
+
     dispatch({
       type: 'orderAndIndex/fetchExpress',
       payload: {},
@@ -61,10 +66,33 @@ export const Index = (props) => {
 
   }, [1]);
   const paginationProps = {
-    showSizeChanger: true,
     showQuickJumper: true,
     pageSize: 10,
     total,
+    onChange: (page,pageSize) => {
+
+      if(searchParams !== null){
+        dispatch({
+          type: 'orderAndIndex/fetch',
+          payload: {
+            statuses:(searchParams.status === 0 ? null: searchParams.status),
+            code: (typeof(searchParams.code) ==='string' ? searchParams.code.trim(): searchParams.code),
+            telephone: (typeof(searchParams.telephone) ==='string' ? searchParams.telephone.trim():searchParams.telephone),
+            pageNum: page,
+            pageSize: pageSize,
+          },
+        });
+      }else{
+        dispatch({
+          type: 'orderAndIndex/fetch',
+          payload: {
+            pageNum: page,
+            pageSize: pageSize,
+          },
+        });
+      }
+
+    },
   };
 
   const showModal = () => {
@@ -148,6 +176,17 @@ export const Index = (props) => {
 
   const handleSearch = (values) => {
     console.log(values);
+    setSearchParams(values);
+    dispatch({
+      type: 'orderAndIndex/fetch',
+      payload: {
+        statuses:(values.status === 0 ? null: values.status),
+        code: (typeof(values.code) ==='string' ? values.code.trim(): values.code),
+        telephone: (typeof(values.telephone) ==='string' ? values.telephone.trim():values.telephone),
+        pageNum: 1,
+        pageSize: 10,
+      },
+    });
   };
 
   const formItemLayout = {
@@ -191,18 +230,19 @@ export const Index = (props) => {
           </Card>
           <Card>
             <Form
-              wrapperCol={{span: 6}}
+              wrapperCol={{span: 12}}
               layout="horizontal"
               form={form}
               onFinish={handleSearch}
             >
               <Form.Item label="订单状态" name="status">
                 <Radio.Group>
-                  <Radio.Button value="0">全部</Radio.Button>
-                  <Radio.Button value="1">待支付</Radio.Button>
-                  <Radio.Button value="2">待发货</Radio.Button>
-                  <Radio.Button value="3">已发货</Radio.Button>
-                  <Radio.Button value="6">申请退款</Radio.Button>
+                  <Radio.Button value={0}>全部</Radio.Button>
+                  <Radio.Button value={1}>待支付</Radio.Button>
+                  <Radio.Button value={2}>待发货</Radio.Button>
+                  <Radio.Button value={3}>已发货</Radio.Button>
+                  <Radio.Button value={5}>已完成</Radio.Button>
+                  <Radio.Button value={6}>申请退款</Radio.Button>
                 </Radio.Group>
               </Form.Item>
               <Form.Item {...formItemLayout} label="订单号" name="code">
@@ -264,7 +304,7 @@ export const Index = (props) => {
                         })
                       }}
                     >
-                      发货
+                      {item.status.index === 2 ? '发货' : null}
                     </a>,
                     <a
                       key={`detail_${item.id}`}
@@ -305,9 +345,12 @@ export const Index = (props) => {
           info={expressInfo}
           expresses={expresses}
           onSubmit={async (fields) => {
-            console.log(fields)
-            setExpressModalVisible(false);
-            setExpressInfo({});
+            const res = await sendOrder(fields);
+            if (isSuccess(res)) {
+              setExpressModalVisible(false);
+              setExpressInfo({});
+              message.success("发货成功");
+            }
           }}
         />) : null}
 

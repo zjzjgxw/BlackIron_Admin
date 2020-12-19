@@ -24,10 +24,10 @@ const OrderItem = (props) => {
       {order && order.items.length > 0 ?
         order.items.map((item) => {
           return (<>
-            <Row gutter={16} style={{height:'108px'}}>
+            <Row gutter={16} style={{height: '108px'}}>
               <Col span={12}>
                 <Row gutter={16}>
-                  <Col >
+                  <Col>
                     <Image
                       width={100}
                       src={item.coverUrl}
@@ -52,7 +52,7 @@ const OrderItem = (props) => {
               </Col>
               <Divider type="vertical" className={styles.verticalDivider}/>
             </Row>
-            <Divider style={{margin: '0px'}} />
+            <Divider style={{margin: '0px'}}/>
           </>)
         }) : null}
 
@@ -75,7 +75,7 @@ const OrderItem = (props) => {
         <Col span={6}>
           <p>{order.receiver}</p>
           <p>{order.telphone}</p>
-          <p>{order.address}</p>
+          <p>{order.province + order.city + order.county + order.address}</p>
           <Divider type="vertical" className={styles.verticalDivider}/>
         </Col>
         <Col span={2}>
