@@ -1,19 +1,25 @@
-import {PageContainer} from '@ant-design/pro-layout';
-import React, {useState, useRef} from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
-import {Button, message} from 'antd';
+import { Button, message } from 'antd';
 
-import {addAdmin, changeAdminStatus, deleteAdmin, queryAdmins, updateAdmin} from '@/pages/Admin/home/service';
+import {
+  addAdmin,
+  changeAdminStatus,
+  deleteAdmin,
+  queryAdmins,
+  updateAdmin,
+} from '@/pages/Admin/home/service';
 import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
 import CreateForm from '@/pages/Admin/home/components/CreateForm';
 import Popconfirm from 'antd/es/popconfirm';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
-import {isSuccess} from '@/utils/utils';
+import { isSuccess } from '@/utils/utils';
 import styles from './index.less';
 import UpdateForm from '@/pages/Admin/home/components/UpdateForm';
 
 const queryAdminsData = async (params) => {
-  const res = await queryAdmins({...params,pageNum:params.current});
+  const res = await queryAdmins({ ...params, pageNum: params.current });
   if (isSuccess(res)) {
     const data = {
       data: res.data.rows,
@@ -37,26 +43,26 @@ export default () => {
       title: 'Id',
       dataIndex: 'id',
       hideInForm: true,
-      search:false,
+      search: false,
     },
     {
       title: '账号',
       dataIndex: 'account',
       copyable: true,
-      search:false,
+      search: false,
     },
     {
       title: '姓名',
       dataIndex: 'name',
       copyable: true,
-      search:false,
+      search: false,
     },
     {
       title: '是否为管理员',
       dataIndex: 'admin',
-      search:false,
+      search: false,
       render: (_, record) => {
-        const {admin} = record;
+        const { admin } = record;
         if (admin) {
           return '是';
         }
@@ -67,15 +73,15 @@ export default () => {
       title: '邮箱',
       dataIndex: 'email',
       copyable: true,
-      search:false,
+      search: false,
     },
     {
       title: '状态',
       dataIndex: 'status',
       filters: true,
-      search:false,
+      search: false,
       render: (_, record) => {
-        const {status} = record;
+        const { status } = record;
         return status.text;
       },
     },
@@ -93,7 +99,7 @@ export default () => {
             } else {
               status = 0;
             }
-            const res = await updateAdmin({id: row.id, status});
+            const res = await updateAdmin({ id: row.id, status });
             if (isSuccess(res)) {
               action.reload();
             }
@@ -113,7 +119,7 @@ export default () => {
         <Popconfirm
           key={row.id}
           title="确定删除？"
-          icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={async () => {
             const res = await deleteAdmin(row.id);
             if (isSuccess(res)) {
@@ -138,11 +144,11 @@ export default () => {
           size="small"
           columns={columns}
           actionRef={actionRef}
-          request={(params, sorter, filter) => queryAdminsData({...params, sorter, filter})}
+          request={(params, sorter, filter) => queryAdminsData({ ...params, sorter, filter })}
           rowKey="id"
           toolBarRender={() => [
             <Button key="addAdminButton" type="primary" onClick={() => handleModalVisible(true)}>
-              <PlusOutlined/>
+              <PlusOutlined />
               新建
             </Button>,
           ]}
@@ -152,18 +158,20 @@ export default () => {
           onCancel={() => handleModalVisible(false)}
           modalVisible={createModalVisible}
           onSubmit={async (fields) => {
-            let logoImg = "";
+            let logoImg = '';
             if (fields.hasOwnProperty('avatar')) {
               logoImg = fields.avatar[0].response.data.path;
             }
             const hide = message.loading('正在添加');
             try {
-              await addAdmin({...fields, status: 1, logoImg});
-              actionRef.current.reload();
-              hide();
-              message.success('添加成功');
-              handleModalVisible(false);
-              return true;
+              const res = await addAdmin({ ...fields, status: 1, logoImg });
+              if (isSuccess(res)) {
+                actionRef.current.reload();
+                hide();
+                message.success('添加成功');
+                handleModalVisible(false);
+                return true;
+              }
             } catch (error) {
               hide();
               message.error('添加失败请重试！');
@@ -181,12 +189,14 @@ export default () => {
             values={adminValues}
             onSubmit={async (fields) => {
               try {
-                await updateAdmin({...fields});
-                actionRef.current.reload();
-                message.success('修改成功');
-                setAdminValues({});
-                handleUpdateModalVisible(false);
-                return true;
+                const res = await updateAdmin({ ...fields });
+                if (isSuccess(res)) {
+                  actionRef.current.reload();
+                  message.success('修改成功');
+                  setAdminValues({});
+                  handleUpdateModalVisible(false);
+                  return true;
+                }
               } catch (error) {
                 message.error('添加失败请重试！');
                 return false;

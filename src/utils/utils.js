@@ -1,4 +1,4 @@
-import { parse } from 'querystring';
+import { parse, stringify } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { notification } from 'antd';
 import numeral from 'numeral';
@@ -61,35 +61,30 @@ export const getRouteAuthority = (path, routeData) => {
   return authorities;
 };
 
-export const isSuccess = (res) => {
+export const isSuccess = (res, notify = true) => {
   if (res.code === 200) {
     return true;
   }
-  notification.error({
-    message: `请求失败`,
-    description: `${res.msg}`,
-  });
+  if (res.code === 401) {
+    history.replace({
+      pathname: '/user/login',
+      search: stringify({
+        redirect: window.location.href,
+      }),
+    });
+    return false;
+  }
+
+  if (notify) {
+    notification.error({
+      message: `请求失败`,
+      description: `${res.msg}`,
+    });
+  }
   return false;
 };
 
 export const priceFormat = (number) => {
   const price = number / 100;
   return `￥${numeral(price).format('0,0.00')}`;
-};
-
-export const getCurrentStaff = () => {
-  try {
-    const staff = JSON.parse(localStorage.getItem('staff'));
-    if (staff === null) {
-      history.replace({
-        pathname: '/user/login',
-      });
-    }
-    return staff;
-  } catch (e) {
-    history.replace({
-      pathname: '/user/login',
-    });
-  }
-  return null;
 };

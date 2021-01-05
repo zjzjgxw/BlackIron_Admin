@@ -22,6 +22,7 @@ export default {
   'menu.product.create': '创建商品',
   'menu.product.images': '商品描述',
   'menu.product.stock': '商品库存',
+  'menu.product.comment':'评论管理',
   'menu.order': '订单管理',
   'menu.order-detail': '订单详情',
   'menu.login': '登录',

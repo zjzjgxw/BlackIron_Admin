@@ -217,6 +217,12 @@ export default defineConfig({
                   hideInMenu: true,
                   component: './Product/Stock',
                 },
+                {
+                  name: 'comment',
+                  icon: 'smile',
+                  path: '/product/comment',
+                  component: './Product/Comment',
+                },
               ],
             },
             {

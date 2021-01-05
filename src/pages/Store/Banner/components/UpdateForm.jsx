@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Form, InputNumber, Modal, Radio, Select, Upload} from 'antd';
-import ProForm, {ProFormText} from '@ant-design/pro-form';
-import SearchModal from "@/pages/Product/Search/SearchModal";
-import {isSuccess} from "@/utils/utils";
-import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
-import {queryProductCategory} from "@/pages/Product/Category/service";
+import React, { useEffect, useState } from 'react';
+import { Button, Form, InputNumber, Modal, Radio, Select, Upload } from 'antd';
+import ProForm, { ProFormText } from '@ant-design/pro-form';
+import SearchModal from '@/pages/Product/Search/SearchModal';
+import { isSuccess } from '@/utils/utils';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { queryProductCategory } from '@/pages/Product/Category/service';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -18,13 +18,7 @@ const formLayout = {
 
 const UpdateForm = (props) => {
   const [form] = Form.useForm();
-  const {
-    onSubmit,
-    onCancel,
-    modalVisible,
-    values,
-  } = props;
-
+  const { onSubmit, onCancel, modalVisible, values } = props;
 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -33,7 +27,7 @@ const UpdateForm = (props) => {
   const [categories, setCategories] = useState([]);
   const [productsModalVisible, setProductsModalVisible] = useState(false);
 
-  const handleChange = info => {
+  const handleChange = (info) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
       return;
@@ -48,7 +42,7 @@ const UpdateForm = (props) => {
     }
   };
 
-  const normFile = e => {
+  const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
     }
@@ -57,21 +51,18 @@ const UpdateForm = (props) => {
 
   const uploadButton = (
     <div>
-      {loading ? <LoadingOutlined/> : <PlusOutlined/>}
-      <div style={{marginTop: 8}}>上传</div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>上传</div>
     </div>
   );
 
   const handleCategoryChange = (categoryId) => {
-    form.setFieldsValue({url: `/pages/category/index?id=${categoryId}`});
+    form.setFieldsValue({ url: `/pages/category/index?id=${categoryId}` });
     return categoryId;
   };
 
   const categorySelected = (
-    <FormItem
-      label="类目"
-      name="categoryId"
-    >
+    <FormItem label="类目" name="categoryId">
       <Select onChange={handleCategoryChange}>
         {categories.map((item) => {
           return (
@@ -84,15 +75,11 @@ const UpdateForm = (props) => {
     </FormItem>
   );
 
-
   const productsButton = (
-    <FormItem
-      label="商品"
-      name="productId"
-    >
+    <FormItem label="商品" name="productId">
       <Button
         htmlType="button"
-        style={{margin: '8px 0px'}}
+        style={{ margin: '8px 0px' }}
         onClick={() => {
           setProductsModalVisible(true);
         }}
@@ -116,12 +103,12 @@ const UpdateForm = (props) => {
   };
 
   useEffect(() => {
-    queryCategory().then(data => {
+    queryCategory().then((data) => {
       setCategories(data);
     });
     setImageUrl(values.imgUrl);
     setImagePath(values.imgPath);
-    form.setFieldsValue({id: values.id, url: values.url, indexNo: values.indexNo})
+    form.setFieldsValue({ id: values.id, url: values.url, indexNo: values.indexNo });
   }, []);
 
   return (
@@ -135,18 +122,12 @@ const UpdateForm = (props) => {
       <ProForm
         {...formLayout}
         form={form}
-        onFinish={(fields) => onSubmit({...fields, imgUrl: imagePath})}
+        onFinish={(fields) => onSubmit({ ...fields, imgUrl: imagePath })}
       >
-
         <FormItem hidden name="id" label="id">
-          <input/>
+          <input />
         </FormItem>
-        <FormItem
-          name="images"
-          label="头像"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
+        <FormItem name="images" label="图片" valuePropName="fileList" getValueFromEvent={normFile}>
           <Upload
             name="file"
             listType="picture-card"
@@ -155,7 +136,11 @@ const UpdateForm = (props) => {
             action="/api/files/images/localUpload"
             onChange={(info) => handleChange(info)}
           >
-            {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
+            {imageUrl ? (
+              <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+            ) : (
+              uploadButton
+            )}
           </Upload>
         </FormItem>
 
@@ -169,7 +154,7 @@ const UpdateForm = (props) => {
             },
           ]}
         >
-          <InputNumber min={0} precision={0} placeholder="请输入序号"/>
+          <InputNumber min={0} precision={0} placeholder="请输入序号" />
         </FormItem>
 
         <FormItem label="跳转类型" name="jumpType">
@@ -183,10 +168,7 @@ const UpdateForm = (props) => {
 
         {jumpType === 0 ? categorySelected : productsButton}
 
-        <ProFormText
-          name="url"
-          label="跳转路径"
-        />
+        <ProFormText name="url" label="跳转路径" />
 
         <SearchModal
           key="searchModel"
@@ -198,11 +180,10 @@ const UpdateForm = (props) => {
           onSubmit={(ids) => {
             setProductsModalVisible(false);
             if (ids.length > 0) {
-              form.setFieldsValue({url: `/pages/product/detail?id=${ids[0]}`});
+              form.setFieldsValue({ url: `/pages/product/detail?id=${ids[0]}` });
             }
           }}
         />
-
       </ProForm>
     </Modal>
   );

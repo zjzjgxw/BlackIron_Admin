@@ -26,7 +26,7 @@ const UpdateForm = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="规则配置"
+      title="员工信息编辑"
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}

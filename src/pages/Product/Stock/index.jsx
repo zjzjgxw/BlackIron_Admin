@@ -1,19 +1,17 @@
-import {Button, Card, Form, InputNumber, Select, notification, message} from 'antd';
-import {connect, history} from 'umi';
-import React, {useEffect, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import {isSuccess} from '@/utils/utils';
-import {
-  queryProductCategorySpecificationOfProduct
-} from '@/pages/Product/Category/Specification/service';
-import {createStockInfo, queryStockInfo, updateStockInfo} from '@/pages/Product/Stock/service';
+import { Button, Card, Form, InputNumber, Select, notification, message } from 'antd';
+import { connect, history } from 'umi';
+import React, { useEffect, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import { isSuccess } from '@/utils/utils';
+import { queryProductCategorySpecificationOfProduct } from '@/pages/Product/Category/Specification/service';
+import { createStockInfo, queryStockInfo, updateStockInfo } from '@/pages/Product/Stock/service';
 import SpecificationTable from '@/pages/Product/Stock/components/SpecificationTable';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 
 const Stock = (props) => {
-  const {submitting, match} = props;
+  const { submitting, match } = props;
   const [form] = Form.useForm();
   const [specifications, setSpecifications] = useState([]);
   const [firstName, setFirstName] = useState(null);
@@ -89,7 +87,7 @@ const Stock = (props) => {
       if (check && hasError) {
         return;
       }
-      if (selectDict[secondName].length > 0) {
+      if (secondName != null && selectDict[secondName].length > 0) {
         selectDict[secondName].forEach((secondValue) => {
           if (check && hasError) {
             return;
@@ -167,19 +165,18 @@ const Stock = (props) => {
       return null;
     }
     return tableData;
-
   };
 
-  const handleSpecificationsParams = specificationsList => {
+  const handleSpecificationsParams = (specificationsList) => {
     const oldList = [];
     const newList = [];
     const deleteList = [];
 
-    specificationsList.forEach(item => {
+    specificationsList.forEach((item) => {
       let addFlag = false;
-      initSpecifications.forEach(exist => {
+      initSpecifications.forEach((exist) => {
         if (item.firstValue === exist.firstValue && item.secondValue === exist.secondValue) {
-          exist.detail = {...exist.detail, ...item.detail};
+          exist.detail = { ...exist.detail, ...item.detail };
           oldList.push(exist);
           addFlag = true;
         }
@@ -189,14 +186,14 @@ const Stock = (props) => {
       }
     });
 
-    initSpecifications.forEach(exist =>{
+    initSpecifications.forEach((exist) => {
       let existFlag = false;
-      specificationsList.forEach(item =>{
+      specificationsList.forEach((item) => {
         if (item.firstValue === exist.firstValue && item.secondValue === exist.secondValue) {
           existFlag = true;
         }
       });
-      if(!existFlag){
+      if (!existFlag) {
         deleteList.push(exist);
       }
     });
@@ -204,8 +201,8 @@ const Stock = (props) => {
     return {
       oldList,
       newList,
-      deleteList
-    }
+      deleteList,
+    };
   };
 
   const onFinish = async (values) => {
@@ -215,28 +212,28 @@ const Stock = (props) => {
       if (specificationsList === null) {
         return;
       }
-      specificationsList.forEach(item => {
+      specificationsList.forEach((item) => {
         item.detail.price = item.detail.price * 100;
       });
     }
-    if (typeof (values.id) === "undefined") {
+    if (typeof values.id === 'undefined') {
       const params = {
-        currencyCode: "CNY",
+        currencyCode: 'CNY',
         productId: values.productId,
         price: values.price * 100,
         expressPrice: values.expressPrice * 100,
         lastNum: values.lastNum,
-        specifications: specificationsList
+        specifications: specificationsList,
       };
       const res = await createStockInfo(params);
       if (isSuccess(res)) {
-        message.success("保存成功");
+        message.success('保存成功');
       }
     } else {
       const spec = handleSpecificationsParams(specificationsList);
       const params = {
         id: values.id,
-        currencyCode: "CNY",
+        currencyCode: 'CNY',
         productId: values.productId,
         price: values.price * 100,
         expressPrice: values.expressPrice * 100,
@@ -247,13 +244,12 @@ const Stock = (props) => {
       };
 
       const res = await updateStockInfo(params);
-      if(isSuccess(res)){
-        message.success("保存成功");
+      if (isSuccess(res)) {
+        message.success('保存成功');
       }
     }
-    history.push(`/product/list`)
+    history.push(`/product/list`);
   };
-
 
   const handleSpecificationChange = (value, name) => {
     // console.log(value, name);
@@ -292,10 +288,14 @@ const Stock = (props) => {
       let dict = {};
       queryStockData().then((data) => {
         if (data == null) {
-          form.setFieldsValue({productId: match.params.id});
+          form.setFieldsValue({ productId: match.params.id });
           return;
         }
-        form.setFieldsValue({...data, price: data.price / 100, expressPrice: data.expressPrice / 100});
+        form.setFieldsValue({
+          ...data,
+          price: data.price / 100,
+          expressPrice: data.expressPrice / 100,
+        });
         const spec = data.specifications;
         setInitSpecifications(data.specifications);
         let tmpFirstName = null;
@@ -311,7 +311,7 @@ const Stock = (props) => {
             tmpSecondName = spec[i].secondName;
             hasSpecifications = true;
           }
-          spec[i].detail.price = spec[i].detail.price /100;
+          spec[i].detail.price = spec[i].detail.price / 100;
 
           if (spec[i].secondValue != null) {
             priceDict[`${spec[i].firstValue}_${spec[i].secondValue}`] = spec[i].detail.price;
@@ -324,7 +324,6 @@ const Stock = (props) => {
           }
           tmpFirstSelected.add(spec[i].firstValue);
           tmpSecondSelected.add(spec[i].secondValue);
-
         }
         form.setFieldsValue({
           [`specification_${tmpFirstName}`]: Array.from(tmpFirstSelected),
@@ -346,7 +345,7 @@ const Stock = (props) => {
             } else {
               setSecondName(data[i].name);
             }
-            dict = {...dict, [data[i].name]: []};
+            dict = { ...dict, [data[i].name]: [] };
           }
           setSelectedDict(dict);
         }
@@ -368,10 +367,10 @@ const Stock = (props) => {
           onFinishFailed={onFinishFailed}
         >
           <FormItem hidden name="id" label="id">
-            <input/>
+            <input />
           </FormItem>
           <FormItem hidden name="productId" label="productId">
-            <input/>
+            <input />
           </FormItem>
 
           <FormItem
@@ -385,7 +384,7 @@ const Stock = (props) => {
               },
             ]}
           >
-            <InputNumber min={0} precision={2} placeholder="请输入价格"/>
+            <InputNumber min={0} precision={2} placeholder="请输入价格" />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -398,7 +397,7 @@ const Stock = (props) => {
               },
             ]}
           >
-            <InputNumber min={0} precision={2} placeholder="请输入邮费"/>
+            <InputNumber min={0} precision={2} placeholder="请输入邮费" />
           </FormItem>
 
           <FormItem
@@ -412,36 +411,36 @@ const Stock = (props) => {
               },
             ]}
           >
-            <InputNumber min={0} precision={0} placeholder="请输入库存数量"/>
+            <InputNumber min={0} precision={0} placeholder="请输入库存数量" />
           </FormItem>
 
           {specifications && Object.keys(specifications).length
             ? specifications.map((specification) => {
-              if (specification.options.length > 0) {
-                return (
-                  <FormItem
-                    {...formItemLayout}
-                    label={specification.name}
-                    name={`specification_${specification.name}`}
-                    key={`${specification.id}`}
-                  >
-                    <Select
-                      mode="multiple"
-                      onChange={(value) => handleSpecificationChange(value, specification.name)}
+                if (specification.options.length > 0) {
+                  return (
+                    <FormItem
+                      {...formItemLayout}
+                      label={specification.name}
+                      name={`specification_${specification.name}`}
+                      key={`${specification.id}`}
                     >
-                      {specification.options.map((option) => {
-                        return (
-                          <Option value={option.content} key={`${specification.id}_${option.id}`}>
-                            {option.content}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </FormItem>
-                );
-              }
-              return null;
-            })
+                      <Select
+                        mode="multiple"
+                        onChange={(value) => handleSpecificationChange(value, specification.name)}
+                      >
+                        {specification.options.map((option) => {
+                          return (
+                            <Option value={option.content} key={`${specification.id}_${option.id}`}>
+                              {option.content}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </FormItem>
+                  );
+                }
+                return null;
+              })
             : null}
 
           {firstName ? (
@@ -474,6 +473,6 @@ const Stock = (props) => {
   );
 };
 
-export default connect(({loading}) => ({
+export default connect(({ loading }) => ({
   submitting: loading.effects['productAndStock/submitRegularForm'],
 }))(Stock);

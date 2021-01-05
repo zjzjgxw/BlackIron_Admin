@@ -23,12 +23,6 @@ const Model = {
         localStorage.setItem('refreshToken', response.data.refreshToken);
         // Login successfully
 
-        // 获取当前用户信息
-        const result = yield call(currentStaff, {});
-        if (result.code === 200) {
-          localStorage.setItem('staff', JSON.stringify(result.data.staff));
-        }
-
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -55,6 +49,8 @@ const Model = {
     logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
+      localStorage.setItem('accessToken', null);
+      localStorage.setItem('refreshToken', null);
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
           pathname: '/user/login',
