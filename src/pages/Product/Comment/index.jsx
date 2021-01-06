@@ -1,10 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons';
-import {Button, Divider, message, Image} from 'antd';
+import {Button, Image} from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
 import {queryComments} from './service';
 import {isSuccess} from "@/utils/utils";
 
@@ -16,8 +14,6 @@ const TableList = () => {
 
 
   const queryCommentData = async (params) => {
-    console.log(params);
-
     const res = await queryComments({ ...params, pageNum: params.current });
     if (isSuccess(res)) {
       return {

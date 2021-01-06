@@ -136,6 +136,12 @@ export default defineConfig({
                   path: '/customer/list',
                   component: './Customer/List',
                 },
+                {
+                  name: 'vip',
+                  icon: 'smile',
+                  path: '/customer/vip',
+                  component: './Customer/Vip',
+                },
               ],
             },
             {

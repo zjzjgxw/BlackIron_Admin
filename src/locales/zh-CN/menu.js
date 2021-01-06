@@ -9,6 +9,7 @@ export default {
   'menu.admin.role-permission': '角色权限管理',
   'menu.admin.admin-permission': '权限管理',
   'menu.customer': '用户',
+  'menu.customer.vip':'vip管理',
   'menu.customer.list': '用户列表',
   'menu.article': '文章',
   'menu.article.list': '文章列表',
