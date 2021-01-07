@@ -6,6 +6,12 @@ export async function queryVips(params) {
   });
 }
 
+export async function queryAllVips(params) {
+  return request('/api/vips/all', {
+    params,
+  });
+}
+
 export async function createVip(params) {
   return request('/api/vips', {
     method: 'POST',

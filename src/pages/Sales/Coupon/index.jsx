@@ -5,13 +5,15 @@ import {PageContainer} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
-import {queryCoupons, deleteCoupon, addCoupon, updateCoupon} from './service';
+import {queryCoupons, deleteCoupon, addCoupon, updateCoupon, sendCoupon} from './service';
 import {isSuccess, priceFormat} from '@/utils/utils';
 import QuestionCircleOutlined from '@ant-design/icons/lib/icons/QuestionCircleOutlined';
 import Popconfirm from 'antd/es/popconfirm';
+import UserSearchModal from "@/pages/Customer/components/UserSearchModal";
 
 const TableList = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
+  const [userSearchModalVisible, setUserSearchModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [currentCouponValues, setCurrentCouponValues] = useState({});
   const actionRef = useRef();
@@ -184,6 +186,16 @@ const TableList = () => {
             修改
           </a>
           <Divider type="vertical"/>
+          <a
+            key={`send_${record.id}`}
+            onClick={() => {
+              setUserSearchModalVisible(true);
+              setCurrentCouponValues(record);
+            }}
+          >
+            发放优惠券
+          </a>
+          <Divider type="vertical"/>
           <Popconfirm
             key={`delete_confirm_${record.id}`}
             title="确定删除？"
@@ -226,6 +238,29 @@ const TableList = () => {
             }
           }
         }}
+      />
+      <UserSearchModal   onCancel={() => setUserSearchModalVisible(false)}
+                         modalVisible={userSearchModalVisible}
+                         onSubmit={async (value) => {
+                           if(value.length == 0){
+                             setUserSearchModalVisible(false);
+                             setCurrentCouponValues({});
+                             return ;
+                           }
+                           const params = {
+                             id: currentCouponValues.id,
+                             userIds: value
+                           };
+                           const res = await sendCoupon(params);
+                           if(isSuccess(res)){
+                             message.info('发放成功');
+                             setUserSearchModalVisible(false);
+                             setCurrentCouponValues({});
+                             if (actionRef.current) {
+                               actionRef.current.reload();
+                             }
+                           }
+                         }}
       />
 
       {currentCouponValues && Object.keys(currentCouponValues).length ? (

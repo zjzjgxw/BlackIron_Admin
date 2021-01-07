@@ -25,3 +25,10 @@ export async function updateCoupon(params) {
     data: { ...params },
   });
 }
+
+export async function sendCoupon(params) {
+  return request('/api/coupons/send', {
+    method: 'POST',
+    data: { ...params },
+  });
+}
