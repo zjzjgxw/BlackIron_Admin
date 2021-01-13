@@ -59,3 +59,9 @@ export async function sendOrder(params) {
     data: { ...params},
   });
 }
+
+export async function queryStat() {
+  return request('/api/orders/stat', {
+    method: 'GET',
+  });
+}

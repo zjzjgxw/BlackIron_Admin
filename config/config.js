@@ -45,7 +45,13 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/home',
+            },
+            {
+              name: 'home',
+              icon: 'smile',
+              path: '/home/index',
+              component: './Home/Index',
             },
             {
               name: 'store',
@@ -77,12 +83,6 @@ export default defineConfig({
                   component: './Store/Detail',
                 },
               ],
-            },
-            {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
             },
             {
               path: '/admin',

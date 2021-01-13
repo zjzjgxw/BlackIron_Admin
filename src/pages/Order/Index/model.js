@@ -1,4 +1,4 @@
-import {addFakeList, queryExpress, queryOrders, removeFakeList, updateFakeList} from './service';
+import {addFakeList, queryExpress, queryOrders, queryStat, removeFakeList, updateFakeList} from './service';
 import {isSuccess} from "@/utils/utils";
 
 const Model = {
@@ -6,36 +6,47 @@ const Model = {
   state: {
     list: [],
     total: 0,
-    expresses:[]
+    expresses: [],
+    stat: {},
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
+    * fetch({payload}, {call, put}) {
       const response = yield call(queryOrders, payload);
       if (isSuccess(response)) {
         yield put({
           type: 'queryList',
           payload: {
-            list:response.data.rows,
-            total:response.data.total
+            list: response.data.rows,
+            total: response.data.total
           },
         });
       }
 
     },
 
-    *fetchExpress({ payload }, { call, put }) {
+    * fetchExpress({payload}, {call, put}) {
       const response = yield call(queryExpress, payload);
       if (isSuccess(response)) {
         yield put({
           type: 'queryExpress',
           payload: {
-            expresses:response.data.express,
+            expresses: response.data.express,
           },
         });
       }
     },
-
-    *submit({ payload }, { call, put }) {
+    * fetchStat({payload}, {call, put}) {
+      const response = yield call(queryStat, payload);
+      if (isSuccess(response)) {
+        yield put({
+          type: 'setStat',
+          payload: {
+            stat: response.data.stat,
+          },
+        });
+      }
+    },
+    * submit({payload}, {call, put}) {
       let callback;
 
       if (payload.id) {
@@ -54,19 +65,21 @@ const Model = {
   },
   reducers: {
     queryList(state, action) {
-      return { ...state, ...action.payload };
+      return {...state, ...action.payload};
     },
-    queryExpress(state,action){
-      return { ...state, ...action.payload };
+    queryExpress(state, action) {
+      return {...state, ...action.payload};
     },
-
+    setStat(state, action) {
+      return {...state, ...action.payload};
+    },
     appendList(
       state = {
         list: [],
       },
       action,
     ) {
-      return { ...state, list: state.list.concat(action.payload) };
+      return {...state, list: state.list.concat(action.payload)};
     },
   },
 };

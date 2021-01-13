@@ -41,14 +41,14 @@ export const Index = (props) => {
   const {
     loading,
     dispatch,
-    orderAndIndex: {list, total, expresses},
+    orderAndIndex: {list, total, expresses, stat},
   } = props;
   const [done, setDone] = useState(false);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
   const [expressModalVisible, setExpressModalVisible] = useState(false);
   const [expressInfo, setExpressInfo] = useState({});
-  const [searchParams,setSearchParams] = useState(null);
+  const [searchParams, setSearchParams] = useState(null);
 
   useEffect(() => {
     dispatch({
@@ -64,25 +64,30 @@ export const Index = (props) => {
       payload: {},
     });
 
+    dispatch({
+      type: 'orderAndIndex/fetchStat',
+      payload: {},
+    });
+
   }, [1]);
   const paginationProps = {
     showQuickJumper: true,
     pageSize: 10,
     total,
-    onChange: (page,pageSize) => {
+    onChange: (page, pageSize) => {
 
-      if(searchParams !== null){
+      if (searchParams !== null) {
         dispatch({
           type: 'orderAndIndex/fetch',
           payload: {
-            statuses:(searchParams.status === 0 ? null: searchParams.status),
-            code: (typeof(searchParams.code) ==='string' ? searchParams.code.trim(): searchParams.code),
-            telephone: (typeof(searchParams.telephone) ==='string' ? searchParams.telephone.trim():searchParams.telephone),
+            statuses: (searchParams.status === 0 ? null : searchParams.status),
+            code: (typeof (searchParams.code) === 'string' ? searchParams.code.trim() : searchParams.code),
+            telephone: (typeof (searchParams.telephone) === 'string' ? searchParams.telephone.trim() : searchParams.telephone),
             pageNum: page,
             pageSize: pageSize,
           },
         });
-      }else{
+      } else {
         dispatch({
           type: 'orderAndIndex/fetch',
           payload: {
@@ -175,14 +180,13 @@ export const Index = (props) => {
   };
 
   const handleSearch = (values) => {
-    console.log(values);
     setSearchParams(values);
     dispatch({
       type: 'orderAndIndex/fetch',
       payload: {
-        statuses:(values.status === 0 ? null: values.status),
-        code: (typeof(values.code) ==='string' ? values.code.trim(): values.code),
-        telephone: (typeof(values.telephone) ==='string' ? values.telephone.trim():values.telephone),
+        statuses: (values.status === 0 ? null : values.status),
+        code: (typeof (values.code) === 'string' ? values.code.trim() : values.code),
+        telephone: (typeof (values.telephone) === 'string' ? values.telephone.trim() : values.telephone),
         pageNum: 1,
         pageSize: 10,
       },
@@ -217,14 +221,17 @@ export const Index = (props) => {
         <div className={styles.standardList}>
           <Card bordered={false}>
             <Row>
-              <Col sm={8} xs={24}>
-                <Info title="我的待办" value="8个任务" bordered/>
+              <Col sm={6} xs={24}>
+                <Info title="总订单数" value={stat.totalNum} bordered/>
               </Col>
-              <Col sm={8} xs={24}>
-                <Info title="本周任务平均处理时间" value="32分钟" bordered/>
+              <Col sm={6} xs={24}>
+                <Info title="待付款订单" value={stat.unPaidNum} bordered/>
               </Col>
-              <Col sm={8} xs={24}>
-                <Info title="本周完成任务数" value="24个任务"/>
+              <Col sm={6} xs={24}>
+                <Info title="待发货订单" value={stat.waitSendNum}/>
+              </Col>
+              <Col sm={6} xs={24}>
+                <Info title="申请退款订单" value={stat.refundNum}/>
               </Col>
             </Row>
           </Card>
